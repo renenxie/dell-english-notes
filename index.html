@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>戴爾英文多益筆記</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #F7F9FC; font-family: -apple-system, "Segoe UI", system-ui, sans-serif; min-height: 100vh; }
+
+  .header { background: #1A3C6E; color: #fff; padding: 32px 20px 28px; text-align: center; }
+  .header-eyebrow { font-size: 11px; letter-spacing: 2px; opacity: 0.65; text-transform: uppercase; margin-bottom: 8px; }
+  .header-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
+  .header-sub { font-size: 13px; opacity: 0.7; margin-top: 6px; }
+
+  .content { max-width: 720px; margin: 0 auto; padding: 28px 16px 48px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+
+  .week-card {
+    background: #fff;
+    border: 1px solid #D8E2F0;
+    border-radius: 10px;
+    padding: 18px 16px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: box-shadow 0.15s, transform 0.15s;
+    cursor: pointer;
+  }
+  .week-card:hover { box-shadow: 0 4px 16px rgba(26,60,110,0.12); transform: translateY(-2px); }
+  .week-card.available { border-color: rgba(26,60,110,0.3); }
+  .week-card.unavailable { opacity: 0.4; cursor: default; pointer-events: none; }
+
+  .week-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #E8501A; }
+  .week-title { font-size: 15px; font-weight: 800; color: #1A3C6E; }
+  .week-badge {
+    display: inline-block;
+    margin-top: 6px;
+    background: rgba(26,60,110,0.08);
+    color: #1A3C6E;
+    border: 1px solid rgba(26,60,110,0.2);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    letter-spacing: 0.5px;
+    width: fit-content;
+  }
+  .week-card.available .week-badge { background: rgba(232,80,26,0.08); color: #E8501A; border-color: rgba(232,80,26,0.25); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Dell English</div>
+  <div class="header-title">新多益筆記</div>
+  <div class="header-sub">點選週次開始複習</div>
+</div>
+
+<div class="content">
+  <div class="grid">
+
+    <a href="week1 notes.html" class="week-card available">
+      <div class="week-label">Week 1</div>
+      <div class="week-title">照片題</div>
+      <div class="week-badge">已完成</div>
+    </a>
+
+    <a href="week2 notes.html" class="week-card available">
+      <div class="week-label">Week 2</div>
+      <div class="week-title">應答題</div>
+      <div class="week-badge">已完成</div>
+    </a>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 3</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 4</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 5</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 6</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 7</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 8</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 9</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 10</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 11</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 12</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 13</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 14</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 15</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 16</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 17</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 18</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 19</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 20</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 21</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 22</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 23</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+    <div class="week-card unavailable">
+      <div class="week-label">Week 24</div>
+      <div class="week-title">—</div>
+      <div class="week-badge">尚未上傳</div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
