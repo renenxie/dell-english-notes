@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 2 新多益筆記 — Part 2 問答題</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #F7F9FC; font-family: -apple-system, "Segoe UI", system-ui, sans-serif; }
+  .header { background: #1A3C6E; color: #fff; padding: 18px 20px 0; position: sticky; top: 0; z-index: 100; }
+  .header-eyebrow { font-size: 11px; letter-spacing: 2px; opacity: 0.65; text-transform: uppercase; margin-bottom: 4px; }
+  .header-title { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+  .header-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; margin-bottom: 14px; }
+  .nav { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn { background: transparent; color: rgba(255,255,255,0.7); border: none; border-radius: 8px 8px 0 0; padding: 8px 14px; cursor: pointer; font-weight: 700; font-size: 13px; white-space: nowrap; transition: all 0.15s; }
+  .nav-btn.active { background: #E8501A; color: #fff; }
+  .content { padding: 20px 16px; max-width: 780px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .card { background: #fff; border: 1px solid #D8E2F0; border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; }
+  .card-blue { background: #EAF0FB; border-color: rgba(26,60,110,0.18); }
+  .card-orange { background: #FFF8F5; border-color: rgba(232,80,26,0.25); }
+  .card-indigo { background: #F0F5FF; border-color: rgba(26,60,110,0.18); }
+  .card-gray { background: #F5F7FA; border-color: #D8E2F0; }
+  .card-green { background: #F0FAF4; border-color: rgba(26,122,74,0.25); }
+  .section-title { color: #1A3C6E; font-size: 15px; font-weight: 800; margin-bottom: 10px; border-bottom: 2px solid #E8501A; padding-bottom: 5px; }
+  .badge { display: inline-block; border-radius: 4px; font-size: 11px; font-weight: 700; padding: 1px 7px; letter-spacing: 0.5px; text-transform: uppercase; margin-right: 6px; }
+  .badge-primary { background: rgba(26,60,110,0.1); color: #1A3C6E; border: 1px solid rgba(26,60,110,0.25); }
+  .badge-accent { background: rgba(232,80,26,0.1); color: #E8501A; border: 1px solid rgba(232,80,26,0.25); }
+  .badge-green { background: rgba(26,122,74,0.1); color: #1A7A4A; border: 1px solid rgba(26,122,74,0.25); }
+  .strategy-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 14px; color: #333; line-height: 1.6; }
+
+  /* DIALOGUE BOX */
+  .dialogue-block { background: #F5F7FA; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; border-left: 3px solid #1A3C6E; }
+  .dialogue-q { font-weight: 700; color: #1A3C6E; font-size: 13px; margin-bottom: 6px; }
+  .dialogue-a { font-size: 13px; color: #444; line-height: 1.7; }
+  .dialogue-a span { display: block; padding-left: 12px; }
+  .arrow { color: #E8501A; font-weight: 700; margin-right: 4px; }
+
+  /* VOCAB WORD */
+  .word-card { border-left: 3px solid #1A3C6E; padding-left: 12px; margin-bottom: 14px; }
+  .word-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 0; flex-wrap: wrap; }
+  .word-en { font-weight: 800; font-size: 15px; color: #1A3C6E; }
+  .word-zh { color: #E8501A; font-weight: 700; }
+  .word-toggle { margin-left: auto; color: #6B7A99; font-size: 12px; }
+  .word-body { display: none; margin-top: 8px; font-size: 13px; }
+  .word-body.open { display: block; }
+  .word-syn { color: #6B7A99; margin-bottom: 4px; }
+  .word-syn span { color: #1A7A4A; font-weight: 600; }
+  .word-note { background: #EAF0FB; border-radius: 6px; padding: 5px 10px; margin-bottom: 6px; color: #1A3C6E; }
+  .word-ex-en { color: #333; font-style: italic; margin-bottom: 3px; }
+  .word-ex-zh { color: #6B7A99; margin-bottom: 6px; }
+
+  /* SYNONYM REPLACE */
+  .syn-block { background: #F5F7FA; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; font-size: 13px; border-left: 3px solid #E8501A; }
+  .syn-q { color: #555; margin-bottom: 4px; }
+  .syn-answer { font-weight: 700; color: #1A3C6E; margin-bottom: 2px; }
+  .syn-word { color: #E8501A; font-weight: 800; }
+  .syn-meaning { color: #1A7A4A; font-weight: 600; }
+
+  /* QUIZ */
+  .quiz-card { background: #fff; border: 1px solid #D8E2F0; border-left: 4px solid #D8E2F0; border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; transition: border-left-color 0.2s; }
+  .quiz-card.revealed { border-left-color: #1A7A4A; }
+  .quiz-card.vocab-revealed { border-left-color: #E8501A; }
+  .quiz-stem { font-weight: 700; color: #1A3C6E; margin-bottom: 8px; font-size: 14px; line-height: 1.5; }
+  .quiz-stem span { font-weight: 400; color: #222; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-bottom: 10px; }
+  .quiz-option { padding: 5px 8px; border-radius: 5px; font-size: 13px; background: #F5F7FA; border: 1px solid transparent; line-height: 1.5; }
+  .quiz-option.correct { background: #E8F7EE; color: #1A7A4A; font-weight: 700; border-color: #1A7A4A; }
+  .quiz-option.wrong { background: rgba(254,240,235,0.5); }
+  .btn { border: none; border-radius: 6px; padding: 7px 16px; cursor: pointer; font-size: 13px; font-weight: 700; }
+  .btn-primary { background: #1A3C6E; color: #fff; }
+  .btn-accent { background: #E8501A; color: #fff; }
+  .answer-box { background: #E8F7EE; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; color: #1A7A4A; font-weight: 700; font-size: 13px; }
+  .explanation { color: #333; font-size: 13px; margin-bottom: 8px; line-height: 1.6; }
+  .vocab-note { background: #EAF0FB; border-radius: 5px; padding: 6px 10px; margin-bottom: 4px; font-size: 12px; }
+  .vocab-note-word { font-weight: 700; color: #1A3C6E; }
+  .vocab-note-ex { font-style: italic; color: #6B7A99; margin-top: 2px; }
+  .option-notes-title { font-weight: 700; color: #1A3C6E; margin-bottom: 4px; font-size: 13px; }
+  .option-note { background: #F5F7FA; border-radius: 5px; padding: 6px 10px; margin-bottom: 5px; font-size: 12px; }
+  .option-note-word { font-weight: 700; color: #E8501A; }
+  .option-note-zh { color: #6B7A99; }
+  .option-note-syn { color: #1A7A4A; }
+  .option-note-ex { font-style: italic; color: #555; margin-top: 2px; }
+  .passage { background: #F5F7FA; border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.8; color: #333; margin-bottom: 10px; }
+  .blank-highlight { background: #FFE066; border-radius: 3px; padding: 0 3px; font-weight: 700; }
+  .part-label { font-weight: 800; color: #1A3C6E; margin: 16px 0 8px; font-size: 15px; }
+  .hint { color: #6B7A99; font-size: 12px; margin-bottom: 12px; }
+  .answer-summary { color: #6B7A99; font-size: 12px; margin-top: 2px; }
+  .warn-box { background: #FFF8E6; border: 1px solid #C47B0040; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #7A5000; margin-bottom: 14px; }
+
+  @media (max-width: 480px) {
+    .quiz-options { grid-template-columns: 1fr; }
+    .header-title { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">新多益實力衝刺</div>
+  <div class="header-title">Week 2 — Part 2 問答題重點筆記</div>
+  <div class="header-sub">問答題搶分關鍵 ｜ Instructor: Len Wang</div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showSection(0)">解題技巧</button>
+    <button class="nav-btn" onclick="showSection(1)">高階詞彙代換</button>
+    <button class="nav-btn" onclick="showSection(2)">高分主題字彙</button>
+    <button class="nav-btn" onclick="showSection(3)">高分字彙練習</button>
+    <button class="nav-btn" onclick="showSection(4)">閱讀小考詳解</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══ SECTION 0: 解題技巧 ══ -->
+<div class="section active" id="sec-0">
+
+  <div class="card">
+    <div class="section-title">🎯 Part 2 三大核心能力</div>
+    <div class="strategy-item"><span class="badge badge-accent">能力①</span>理解間接回答（Indirect Response）— 回答不一定直接，要聽懂言下之意</div>
+    <div class="strategy-item"><span class="badge badge-accent">能力②</span>高階詞彙代換（Paraphrase）— 正確答案常用同義詞替換題目中的關鍵字</div>
+    <div class="strategy-item"><span class="badge badge-accent">能力③</span>根據情境做出反應（Context Response）— 看穿提問者意圖，選出符合情況的回應</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">💬 能力①：間接回答的各種形式</div>
+    <p style="color:#444;font-size:14px;line-height:1.7;margin-bottom:14px;">Part 2 的正確答案不一定直接回答問題，可能是：反問、提供間接資訊、表達不確定、或說明情況。以下是各種間接回答的示範：</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-q">The meeting room is getting hot.</div>
+      <div class="dialogue-a">
+        <span><span class="arrow">→</span> Shall I open the window? <span style="color:#6B7A99">（反問）</span></span>
+        <span><span class="arrow">→</span> I've just turned on the air conditioner. <span style="color:#6B7A99">（間接說明）</span></span>
+        <span><span class="arrow">→</span> Is the air conditioner working? <span style="color:#6B7A99">（反問確認）</span></span>
+        <span><span class="arrow">→</span> Really? I feel quite comfortable here. <span style="color:#6B7A99">（表達不同感受）</span></span>
+      </div>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-q">Haven't you contacted Mr. Jones?</div>
+      <div class="dialogue-a">
+        <span><span class="arrow">→</span> No. I'm thinking of doing it now. <span style="color:#6B7A99">（直接否定 + 說明）</span></span>
+        <span><span class="arrow">→</span> Do you have his phone number? <span style="color:#6B7A99">（反問索取資訊）</span></span>
+        <span><span class="arrow">→</span> I left a message on his answering machine. <span style="color:#6B7A99">（說明已採取行動）</span></span>
+        <span><span class="arrow">→</span> It seems his mobile has bad reception. <span style="color:#6B7A99">（說明困難）</span></span>
+      </div>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-q">I wish we could hire more staff members.</div>
+      <div class="dialogue-a">
+        <span><span class="arrow">→</span> I couldn't agree more. <span style="color:#6B7A99">（完全同意）</span></span>
+        <span><span class="arrow">→</span> Maybe you should talk to your boss. <span style="color:#6B7A99">（給建議）</span></span>
+        <span><span class="arrow">→</span> Why? Can't you handle all the work? <span style="color:#6B7A99">（質疑）</span></span>
+        <span><span class="arrow">→</span> Is there anything I can do for you? <span style="color:#6B7A99">（提供協助）</span></span>
+      </div>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-q">When is the sales report supposed to be ready?</div>
+      <div class="dialogue-a">
+        <span><span class="arrow">→</span> By next Monday. <span style="color:#6B7A99">（直接回答時間）</span></span>
+        <span><span class="arrow">→</span> It will take a few more days. <span style="color:#6B7A99">（模糊時間）</span></span>
+        <span><span class="arrow">→</span> I put it on your desk. <span style="color:#6B7A99">（已完成，完全間接）</span></span>
+        <span><span class="arrow">→</span> We're still waiting for some data to be compiled. <span style="color:#6B7A99">（說明原因）</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">🎭 能力③：情境反應題示範</div>
+    <p style="color:#444;font-size:14px;line-height:1.7;margin-bottom:14px;">聽懂提問者真正的意圖，選出最符合情境的回應：</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-q">Have you finished writing the financial report?</div>
+      <div class="dialogue-a">
+        <span><span class="arrow">→</span> Would you like to take a look at it? <span style="color:#6B7A99">（暗示已完成，邀對方看）</span></span>
+        <span><span class="arrow">→</span> Yes. I could help you with yours if you need. <span style="color:#6B7A99">（完成了，順帶提供協助）</span></span>
+      </div>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-q">Do you know how to reach Jason by phone?</div>
+      <div class="dialogue-a">
+        <span><span class="arrow">→</span> Here's his number. <span style="color:#6B7A99">（直接提供）</span></span>
+        <span><span class="arrow">→</span> Is it urgent? He's on vacation now. <span style="color:#6B7A99">（確認緊急程度 + 說明狀況）</span></span>
+      </div>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-q">There will be a large audience for this year's workshop.</div>
+      <div class="dialogue-a">
+        <span><span class="arrow">→</span> How many people does that room accommodate? <span style="color:#6B7A99">（考慮場地容納量）</span></span>
+        <span><span class="arrow">→</span> I've already placed an order for additional handouts. <span style="color:#6B7A99">（已預先準備）</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">⚠️ Part 2 常見陷阱</div>
+    <div class="strategy-item"><span class="badge badge-accent">陷阱①</span>相似音干擾：題目出現某個詞，選項用發音相似的詞混淆（例：sheep / ship、rate / late）→ 要聽意思，不要聽音</div>
+    <div class="strategy-item"><span class="badge badge-accent">陷阱②</span>同詞重複：正確答案通常<strong>不會</strong>直接重複題目的關鍵字，常用同義詞替換</div>
+    <div class="strategy-item"><span class="badge badge-accent">陷阱③</span>語意不符的直接回答：看似在回答問題，但語意邏輯對不上</div>
+    <div class="strategy-item"><span class="badge badge-accent">技巧</span>第一個字很重要：聽到問句的第一個詞（Who / What / When / Where / Why / How）立刻判斷題型，縮小答案範圍</div>
+  </div>
+
+</div>
+
+<!-- ══ SECTION 1: 高階詞彙代換 ══ -->
+<div class="section" id="sec-1">
+  <div class="card card-blue">
+    <div style="font-weight:800;color:#1A3C6E;margin-bottom:4px;">🔄 高階詞彙代換（Paraphrase）</div>
+    <div style="font-size:13px;color:#6B7A99;">Part 2 正確答案常用同義詞替換題目中的關鍵字，以下是講義中出現的代換組合，每個關鍵詞都附上完整用法說明。</div>
+  </div>
+  <div id="syn-blocks"></div>
+</div>
+
+<!-- ══ SECTION 2: 高分主題字彙 ══ -->
+<div class="section" id="sec-2">
+  <div class="card card-blue">
+    <div style="font-weight:800;color:#1A3C6E;margin-bottom:4px;">📌 主題字彙 (3)：公司人力 &amp; 裁員</div>
+    <div class="hint" style="margin:0;">點擊各單字展開完整用法與補充例句</div>
+  </div>
+  <div id="theme3-words"></div>
+  <div class="card card-blue" style="margin-top:8px;">
+    <div style="font-weight:800;color:#1A3C6E;margin-bottom:4px;">📌 主題字彙 (4)：升遷、辭職、退休</div>
+    <div class="hint" style="margin:0;">點擊各單字展開完整用法與補充例句</div>
+  </div>
+  <div id="theme4-words"></div>
+</div>
+
+<!-- ══ SECTION 3: 高分字彙練習 ══ -->
+<div class="section" id="sec-3">
+  <div class="card card-orange">
+    <div style="font-weight:800;color:#E8501A;">📝 高分字彙練習（共 12 題）</div>
+    <div class="answer-summary">解答（講義核對）：1~6: C C A C A A ｜ 7~12: D C B C A A</div>
+  </div>
+  <div id="vocab-practice-questions"></div>
+</div>
+
+<!-- ══ SECTION 4: 閱讀小考 ══ -->
+<div class="section" id="sec-4">
+  <div class="card card-indigo">
+    <div style="font-weight:800;color:#1A3C6E;">📋 Week 2 閱讀小考詳解</div>
+    <div class="answer-summary">Part 5 解答（講義核對）：A D C B D A B<br>Part 6 解答（講義核對）：A C B A</div>
+  </div>
+  <div class="warn-box">⚠️ 講義解答頁標題誤印為「Week 1 閱讀小考解答」，實際上是 Week 2 的解答。</div>
+  <div class="part-label">Part 5（第 1–7 題）</div>
+  <div id="part5-questions"></div>
+  <div class="part-label">Part 6（第 8–11 題）</div>
+  <div class="card card-gray">
+    <div style="font-weight:700;color:#1A3C6E;margin-bottom:8px;">📄 公告：Oaktown Classic Cinema (OCC)</div>
+    <div class="passage">
+      The Oaktown Classic Cinema (OCC) <span class="blank-highlight">[8]</span> movie tickets at half price on weekends during the summer months. The films shown on these summer weekends will mostly include the standard classic movies that we are known for. We will also, however, offer one <span class="blank-highlight">[9]</span> film per day, usually in the evening. <span class="blank-highlight">[10]</span>. The OCC offers three options, including one for unlimited movies.<br><br>
+      The cinema will publish its list of summer movies <span class="blank-highlight">[11]</span> the end of May.
+    </div>
+  </div>
+  <div id="part6-questions"></div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+function showSection(idx) {
+  document.querySelectorAll('.section').forEach((s,i) => s.classList.toggle('active', i===idx));
+  document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  window.scrollTo(0,0);
+}
+
+function makeWordCard(w, container) {
+  const div = document.createElement('div');
+  div.className = 'word-card';
+  div.innerHTML = `
+    <div class="word-header" onclick="toggleWord(this)">
+      <span class="word-en">${w.en}</span>
+      ${w.pos ? `<span class="badge badge-primary">${w.pos}</span>` : ''}
+      <span class="word-zh">${w.zh}</span>
+      <span class="word-toggle">▼</span>
+    </div>
+    <div class="word-body">
+      ${w.synonyms ? `<div class="word-syn">≈ 近義 / 相關：<span>${w.synonyms}</span></div>` : ''}
+      ${w.note ? `<div class="word-note">${w.note}</div>` : ''}
+      <div class="word-ex-en">${w.example.en}</div>
+      <div class="word-ex-zh">${w.example.zh}</div>
+      ${w.extraExample ? `<div class="word-ex-en" style="margin-top:6px">${w.extraExample.en}</div><div class="word-ex-zh">${w.extraExample.zh}</div>` : ''}
+    </div>`;
+  container.appendChild(div);
+}
+
+function toggleWord(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.word-toggle');
+  const open = body.classList.toggle('open');
+  toggle.textContent = open ? '▲' : '▼';
+}
+
+function makeQuizCard(q, container, isVocab) {
+  const letters = ['A','B','C','D'];
+  const div = document.createElement('div');
+  div.className = 'quiz-card';
+  const optionsHtml = q.options.map((o,i) => `<div class="quiz-option" data-letter="${letters[i]}">(${letters[i]}) ${o}</div>`).join('');
+  const notesHtml = q.vocabNotes ? q.vocabNotes.map(v => `
+    <div class="vocab-note">
+      <span class="vocab-note-word">${v.word}</span> — ${v.note}
+      ${v.ex ? `<div class="vocab-note-ex">${v.ex}</div>` : ''}
+    </div>`).join('') : '';
+  const optionNotesHtml = q.optionNotes ? `
+    <div class="option-notes-title">各選項補充：</div>
+    ${q.optionNotes.map((v,i) => `
+      <div class="option-note">
+        <span class="option-note-word">(${letters[i]}) ${v.word}</span>
+        <span class="option-note-zh"> — ${v.zh}</span>
+        ${v.syn ? `<span class="option-note-syn"> ≈ ${v.syn}</span>` : ''}
+        ${v.ex ? `<div class="option-note-ex">${v.ex}</div>` : ''}
+      </div>`).join('')}` : '';
+  div.innerHTML = `
+    <div class="quiz-stem">Q${q.num}. <span>${q.stem}</span></div>
+    <div class="quiz-options">${optionsHtml}</div>
+    <button class="btn ${isVocab ? 'btn-accent' : 'btn-primary'}" onclick="revealAnswer(this,'${q.answer}',${isVocab})">查看答案與解析</button>
+    <div class="quiz-revealed" style="display:none;font-size:13px;">
+      <div class="answer-box">✅ 正解：(${q.answer})${isVocab ? ' — ' + q.explanation : ''}</div>
+      ${!isVocab ? `<div class="explanation">${q.explanation}</div>` : ''}
+      ${notesHtml}
+      ${optionNotesHtml}
+    </div>`;
+  container.appendChild(div);
+}
+
+function revealAnswer(btn, answer, isVocab) {
+  const card = btn.closest('.quiz-card');
+  card.classList.add(isVocab ? 'vocab-revealed' : 'revealed');
+  card.querySelectorAll('.quiz-option').forEach(opt => {
+    if (opt.dataset.letter === answer) opt.classList.add('correct');
+    else opt.classList.add('wrong');
+  });
+  btn.style.display = 'none';
+  card.querySelector('.quiz-revealed').style.display = 'block';
+}
+
+// ── DATA ──────────────────────────────────────────────
+
+const synData = [
+  { q: "When will the contract become valid?", answer: "The agreement will <u>commence</u> on the day it is signed.",
+    word: "commence", meaning: "開始；生效 = begin, start, take effect",
+    note: "commence (v.) 較正式，常用於法律、合約、典禮語境；名詞：commencement（畢業典禮也叫 commencement）",
+    ex1: "The construction work will commence next Monday.", ex1zh: "建築工程將於下週一開始。",
+    ex2: "The agreement commences on the date it is signed by both parties.", ex2zh: "協議自雙方簽署之日起生效。" },
+  { q: "What makes your new line of cosmetics so attractive?", answer: "More than anything, its <u>affordability</u>.",
+    word: "affordability", meaning: "價格合理性；可負擔性 = reasonable price, cost-effectiveness",
+    note: "afford (v.) → affordable (adj.) → affordability (n.)；「買得起的」常考搭配：affordable housing 可負擔住房",
+    ex1: "The affordability of electric cars has improved dramatically.", ex1zh: "電動車的價格已大幅改善。",
+    ex2: "One of the brand's biggest selling points is its affordability.", ex2zh: "這個品牌最大的賣點之一是其實惠的價格。" },
+  { q: "Do you have any experience in the automobile industry?", answer: "No, but I have some in the <u>relevant</u> field.",
+    word: "relevant", meaning: "相關的；切題的 = related, pertinent, applicable",
+    note: "relevant to + N；反義：irrelevant（不相關的）；多益高頻詞，搭配 relevant experience 相關經驗",
+    ex1: "Please attach any relevant documents to your application.", ex1zh: "請在申請中附上任何相關文件。",
+    ex2: "Her background in finance is highly relevant to this position.", ex2zh: "她的財務背景與這個職位高度相關。" },
+  { q: "I'm wondering if you could tell me where the smoking section is.", answer: "Sorry, smoking's not allowed on the <u>premises</u>.",
+    word: "premises", meaning: "（某機構的）房屋及附屬土地；場所 = property, building, facility",
+    note: "premises 通常用複數；on the premises = 在場所內；off the premises = 在場所外；常見於規定、合約",
+    ex1: "Smoking is strictly prohibited on the premises.", ex1zh: "場所內嚴禁吸煙。",
+    ex2: "All visitors must sign in before entering the premises.", ex2zh: "所有訪客進入場所前必須登記。" },
+  { q: "Have you read the film's review?", answer: "Yeah, I'm surprised it's critically <u>acclaimed</u>.",
+    word: "acclaim", meaning: "（v./n.）讚揚；喝彩；好評 = praise, applaud, laud",
+    note: "critically acclaimed = 受到評論界好評；名詞：acclaim / acclamation；形容詞：acclaimed（受讚揚的）",
+    ex1: "Her debut novel was critically acclaimed by reviewers worldwide.", ex1zh: "她的處女作受到全球評論家的好評。",
+    ex2: "The film received widespread acclaim for its stunning visuals.", ex2zh: "這部電影因其驚人的視覺效果而獲得廣泛好評。" },
+  { q: "In which newspaper should we run the ads?", answer: "The one with the largest <u>circulation</u>.",
+    word: "circulation", meaning: "（報紙）發行量；流通；循環 = distribution, readership, reach",
+    note: "circulation 在商業英文有兩種用法：(1) 發行量 newspaper circulation (2) 流通 money in circulation",
+    ex1: "This newspaper has the largest circulation in the country.", ex1zh: "這份報紙在全國發行量最大。",
+    ex2: "The company put a new brochure into circulation last week.", ex2zh: "公司上週開始發行新的宣傳冊。" },
+];
+
+const theme3 = [
+  { en: "between jobs", pos: "phr.", zh: "待業中", synonyms: "unemployed, out of work, job hunting",
+    note: "委婉說法，比 unemployed 更禮貌；between jobs = 正在找下一份工作",
+    example: { en: "Many recent college graduates are essentially between jobs.", zh: "許多剛畢業的大學生可以說是在待業中。" },
+    extraExample: { en: "He's been between jobs for three months but has several interviews lined up.", zh: "他已待業三個月，但有幾個面試在等著。" } },
+  { en: "jobless", pos: "adj.", zh: "失業的；沒有工作的", synonyms: "unemployed, out of work",
+    note: "jobless rate = 失業率；the jobless = 失業者（集合名詞）",
+    example: { en: "The economic downturn has left many people jobless.", zh: "經濟衰退導致許多人失業。" },
+    extraExample: { en: "The number of jobless workers rose sharply during the recession.", zh: "衰退期間失業工人的數量急劇上升。" } },
+  { en: "lay off", pos: "v. phr.", zh: "解雇；裁員（因公司因素）", synonyms: "cut jobs, let go, downsize",
+    note: "lay off = 因公司業務問題而裁員（非個人犯錯）；名詞：layoff 裁員；注意與 fire（因犯錯解雇）區別",
+    example: { en: "The company will probably begin to lay off some workers this year.", zh: "公司今年可能會開始裁員。" },
+    extraExample: { en: "Over 200 employees were laid off following the merger.", zh: "合併後超過200名員工被裁員。" } },
+  { en: "out of work", pos: "phr.", zh: "失業；沒有工作", synonyms: "unemployed, jobless, between jobs",
+    note: "= unemployed；常搭配：be out of work / put sb out of work（使某人失業）",
+    example: { en: "Many people are struggling to find jobs because they are out of work.", zh: "許多人因失業而努力找工作。" },
+    extraExample: { en: "The factory closure put hundreds of workers out of work.", zh: "工廠關閉使數百名工人失業。" } },
+  { en: "unemployed / unemployment", pos: "adj. / n.", zh: "失業的 / 失業（率）", synonyms: "jobless, out of work ↔ employed",
+    note: "unemployment rate = 失業率；underemployed = 就業不足的（有工作但低於技能水平）",
+    example: { en: "The Ministry of Labor is providing subsidies to foreigners who are unemployed.", zh: "勞工部正在向失業的外國人提供補貼。" },
+    extraExample: { en: "Unemployment fell to a record low of 2.3% last quarter.", zh: "失業率上季降至2.3%的歷史新低。" } },
+  { en: "workforce", pos: "n.", zh: "勞動力；勞動人口；員工（集合）", synonyms: "labor force, staff, employees, manpower",
+    note: "⚠️ workforce + 單數或複數動詞均可：The workforce is/are affected. 常見搭配：skilled workforce 熟練勞動力",
+    example: { en: "Much of the workforce in the banking sector is/are affected by the new legislation.", zh: "在銀行部門工作的大多數勞工都被新的立法所影響。" },
+    extraExample: { en: "The company plans to reduce its workforce by 10% next year.", zh: "公司計劃明年將員工人數減少10%。" } },
+  { en: "ax jobs", pos: "v.", zh: "裁員；削減職位", synonyms: "cut jobs, shed jobs, slash jobs",
+    note: "ax / cut / shed / slash jobs 均表裁員；salary freeze = 凍薪；ax 也拼作 axe（英式）",
+    example: { en: "The company will ax about 1,600 jobs across the country to slash costs.", zh: "該公司將在全國裁員約1,600名員工以削減成本。" },
+    extraExample: { en: "The airline axed 3,000 jobs as passenger numbers declined.", zh: "由於乘客數量下降，該航空公司裁減了3,000個職位。" } },
+  { en: "be made redundant", pos: "v. phr.", zh: "被裁員；被解雇（因職位取消）", synonyms: "be let go, be laid off ↔ be sacked（因犯錯）",
+    note: "英式用法；redundant (adj.) = 多餘的、被裁的；redundancy (n.) = 裁員、遣散；redundancy pay = 遣散費",
+    example: { en: "Stacy's husband was made redundant last year and now works part-time as an Uber driver.", zh: "Stacy的先生去年被裁員，現在兼差當Uber司機。" },
+    extraExample: { en: "She was made redundant when the department was restructured.", zh: "部門重組時她被裁員了。" } },
+  { en: "downsize", pos: "v.", zh: "縮編人員；精簡規模", synonyms: "cut back, reduce staff, restructure",
+    note: "downsizing (n.) 縮編；也可指公司整體規模縮小；相反：upsize / expand",
+    example: { en: "The plight of the economy is forcing businesses to downsize.", zh: "經濟困境迫使企業縮編人員。" },
+    extraExample: { en: "The tech firm downsized from 500 to 300 employees over two years.", zh: "這家科技公司在兩年內從500名員工縮減到300名。" } },
+];
+
+const theme4 = [
+  { en: "notice (n.)", pos: "n.", zh: "通知；預告；離職通知", synonyms: "advance warning, notification",
+    note: "give notice / hand in notice = 提出辭呈；two weeks' notice = 提前兩週告知（業界慣例）",
+    example: { en: "Providing two weeks' notice is customary and maintains positive professional relationships.", zh: "提前兩週通知是慣例，也是維持良好職業關係的方式。" },
+    extraExample: { en: "She gave her employer one month's notice before leaving.", zh: "她在離職前給雇主一個月的通知。" } },
+  { en: "hand in notice / resignation", pos: "v. phr.", zh: "遞出辭呈", synonyms: "submit resignation, resign, quit",
+    note: "= submit one's resignation；tender resignation（較正式）；letter of resignation = 辭職信",
+    example: { en: "He decided to hand in his resignation after fifteen years with the company.", zh: "他決定在公司工作十五年後遞出辭呈。" },
+    extraExample: { en: "She submitted her resignation via email on Friday afternoon.", zh: "她週五下午透過電子郵件提交了辭呈。" } },
+  { en: "resign", pos: "v.", zh: "辭職；辭去", synonyms: "quit, step down, leave",
+    note: "resign from + 職位/公司；⚠️ be resigned to N/V-ing = 對...認命、無奈接受（完全不同意思！）",
+    example: { en: "He resigned from the company in order to take a more challenging job.", zh: "他從公司辭職，以便從事更具挑戰性的工作。" },
+    extraExample: { en: "She seems resigned to losing the contract — she's stopped fighting it.", zh: "她似乎對失去合約感到無奈，已經不再爭取了。" } },
+  { en: "retire", pos: "v.", zh: "退休；退役", synonyms: "step down, leave the workforce",
+    note: "retired (adj.) 退休的；retiree (n.) 退休人員；take early retirement = 提前退休；FIRE = Financial Independence, Retire Early",
+    example: { en: "FIRE stands for financial independence, retire early — a movement encouraging people to invest toward early retirement.", zh: "FIRE代表財務獨立、提早退休，是一項鼓勵人們投資以提前退休的運動。" },
+    extraExample: { en: "He retired at 55 after a successful career in finance.", zh: "他在金融業成功的職業生涯後於55歲退休。" } },
+  { en: "appoint", pos: "v.", zh: "任命；委派", synonyms: "designate, assign, nominate",
+    note: "appoint sb (as) + 職稱；appointment (n.) 任命 / 約會；appointed (adj.) 被任命的",
+    example: { en: "A commission has just been appointed to investigate fraud claims.", zh: "剛剛任命了一個委員會來調查欺詐索賠。" },
+    extraExample: { en: "She was appointed as the new CFO of the company.", zh: "她被任命為公司的新財務長。" } },
+  { en: "pension", pos: "n.", zh: "退休金；養老金", synonyms: "retirement fund, annuity",
+    note: "draw / receive a pension = 領退休金；pension fund = 退休基金；pension sb off = 付退休金使其離職",
+    example: { en: "He won't be able to draw his pension until he's 65.", zh: "在他65歲之前，他將無法提取退休金。" },
+    extraExample: { en: "The company contributes 5% of each employee's salary to their pension fund.", zh: "公司為每位員工的退休基金繳納薪資的5%。" } },
+  { en: "relocate", pos: "v.", zh: "搬遷；調派（至另一地）", synonyms: "move, transfer, redeploy",
+    note: "relocation (n.) 搬遷；relocation package = 搬遷補貼（公司提供給員工調派時的補助）",
+    example: { en: "The couple relocated to Florida after retirement.", zh: "這對夫婦退休後搬到了佛羅里達。" },
+    extraExample: { en: "The company offered a generous relocation package to attract talent.", zh: "公司提供豐厚的搬遷補貼以吸引人才。" } },
+  { en: "seniority", pos: "n.", zh: "資歷；年資", synonyms: "years of service, tenure, experience",
+    note: "seniority system = 論資排輩制；merit = 功績（與 seniority 常對比）",
+    example: { en: "In future, promotion will be based on merit not seniority.", zh: "以後晉升要看業績而非資歷。" },
+    extraExample: { en: "Employees with greater seniority received larger bonuses.", zh: "資歷較深的員工獲得了更大的獎金。" } },
+  { en: "severance (pay)", pos: "n.", zh: "遣散費；資遣費", synonyms: "redundancy pay, termination pay",
+    note: "severance package = 遣散福利方案（包含薪資補償、保險延續等）",
+    example: { en: "The management offered employees one week's severance pay for each six months they worked.", zh: "資方向雇員提供遣散費，標準是每六個月工齡可獲得一星期工資。" },
+    extraExample: { en: "She negotiated a six-month severance package when she was laid off.", zh: "被裁員時她協商到了六個月的遣散方案。" } },
+  { en: "step down / step aside", pos: "v. phr.", zh: "退位；讓位；辭去職務", synonyms: "resign, retire, abdicate",
+    note: "常用於高層職位；step down from = 從...職位退下；step aside in favor of sb = 讓位給某人",
+    example: { en: "He is unwilling to step aside in favor of a younger person.", zh: "他不願意讓位給一個比他年輕的人。" },
+    extraExample: { en: "The CEO decided to step down after 20 years of leading the company.", zh: "執行長決定在領導公司20年後退位。" } },
+];
+
+const vocabPracticeData = [
+  { num:1, answer:"C", stem:"Although there is a ________ meeting scheduled for tomorrow morning, all employees who have appointments with clients will be excused.",
+    options:["relevant","voluntary","mandatory","prominent"],
+    explanation:"正解 (C) mandatory（強制性的）= 雖然明天有「強制性的」會議，但有客戶約的員工可獲豁免。(A) relevant 相關的；(B) voluntary 自願的（與 excused 邏輯矛盾）；(D) prominent 顯著的，均不符。",
+    optionNotes:[
+      {word:"relevant",zh:"相關的；切題的",syn:"pertinent, applicable",ex:"Please provide only relevant information in your application."},
+      {word:"voluntary",zh:"自願的；義務的（非強制）",syn:"optional, elective, non-compulsory",ex:"Attendance at the workshop is purely voluntary."},
+      {word:"mandatory",zh:"強制性的；義務的（必須做的）",syn:"compulsory, required, obligatory",ex:"Safety training is mandatory for all new employees."},
+      {word:"prominent",zh:"顯著的；傑出的；重要的",syn:"notable, distinguished, leading",ex:"She is a prominent figure in the tech industry."},
+    ]},
+  { num:2, answer:"C", stem:"In order to ________ complaints related to seating selection, the airline set up a page on its website to allow passengers to choose seats.",
+    options:["distinguish","exclude","resolve","dispose"],
+    explanation:"正解 (C) resolve（解決；處理）= 為了「解決」選座投訴，航空公司設立網頁讓乘客自行選座。(A) distinguish 區分；(B) exclude 排除；(D) dispose 處置/丟棄，均不符語境。",
+    optionNotes:[
+      {word:"distinguish",zh:"區分；辨別",syn:"differentiate, tell apart, discern",ex:"It can be hard to distinguish between the two products."},
+      {word:"exclude",zh:"排除；不包括",syn:"omit, leave out, bar",ex:"The price excludes taxes and service charges."},
+      {word:"resolve",zh:"解決；處理；決定",syn:"settle, address, sort out",ex:"The manager resolved the customer's complaint within an hour."},
+      {word:"dispose",zh:"處置；處理；丟棄（搭配 of）",syn:"get rid of, discard, deal with",ex:"Please dispose of all hazardous materials properly."},
+    ]},
+  { num:3, answer:"A", stem:"David Carter's book offers a unique ________ on the life of a Wall Street trader, as he had worked over twenty years in the stock market.",
+    options:["perspective","distinction","gratitude","coverage"],
+    explanation:"正解 (A) perspective（觀點；視角）= offer a perspective on = 提供對...的觀點/見解，搭配完全正確。(B) distinction 區別/卓越；(C) gratitude 感激；(D) coverage 報導/覆蓋，均不符。",
+    optionNotes:[
+      {word:"perspective",zh:"觀點；視角；看法",syn:"viewpoint, standpoint, insight",ex:"This book offers a unique perspective on modern leadership."},
+      {word:"distinction",zh:"區別；差異；卓越",syn:"difference, excellence, honor",ex:"She graduated with distinction from Harvard Law School."},
+      {word:"gratitude",zh:"感激；感謝",syn:"thankfulness, appreciation",ex:"She expressed her gratitude to the team for their hard work."},
+      {word:"coverage",zh:"報導；覆蓋範圍；保險範圍",syn:"reporting, reach, protection",ex:"The event received extensive media coverage."},
+    ]},
+  { num:4, answer:"C", stem:"Only employees who are ________ to operate machinery will be given pass codes to Building C at the Hamilton facility.",
+    options:["indicated","referred","authorized","devoted"],
+    explanation:"正解 (C) authorized（被授權的）= be authorized to do sth = 有授權做某事，是多益高頻句型。(A) indicated 被指示的；(B) referred 被轉介的；(D) devoted 致力的，搭配均不符。",
+    optionNotes:[
+      {word:"indicated",zh:"被指示的；表明的",syn:"shown, specified",ex:"Please follow the steps as indicated in the manual."},
+      {word:"referred",zh:"被轉介的；被提及的",syn:"directed, recommended",ex:"She was referred to a specialist by her doctor."},
+      {word:"authorized",zh:"被授權的；有權限的",syn:"permitted, licensed, approved",ex:"Only authorized personnel may access the server room."},
+      {word:"devoted",zh:"致力的；忠誠的（搭配 to）",syn:"dedicated, committed, loyal",ex:"She is devoted to improving customer satisfaction."},
+    ]},
+  { num:5, answer:"A", stem:"Credit card holders are strongly encouraged to ________ billing statements to ensure that all transactions are legitimate.",
+    options:["inspect","reimburse","permit","implement"],
+    explanation:"正解 (A) inspect（檢查；審查）= 鼓勵持卡人「檢查」帳單以確認交易合法，語意最合。(B) reimburse 報銷；(C) permit 允許；(D) implement 實施，均不符。",
+    optionNotes:[
+      {word:"inspect",zh:"檢查；審查；視察",syn:"examine, review, check, scrutinize",ex:"The safety officer inspected all equipment before the event."},
+      {word:"reimburse",zh:"報銷；退款；補償",syn:"refund, compensate, pay back",ex:"Submit your receipts and you will be reimbursed within five days."},
+      {word:"permit",zh:"允許；許可 / 許可證（n.）",syn:"allow, authorize, grant",ex:"Photography is not permitted inside the museum."},
+      {word:"implement",zh:"實施；執行；落實",syn:"carry out, execute, put into effect",ex:"The new policy will be implemented starting next quarter."},
+    ]},
+  { num:6, answer:"A", stem:"The high rates for medical treatment were ________ affecting the health of pensioners who were avoiding medical treatment.",
+    options:["adversely","shortly","fortunately","thoroughly"],
+    explanation:"正解 (A) adversely（負面地；不利地）= adversely affect = 對...產生負面影響，多益超高頻搭配。(B) shortly 不久後；(C) fortunately 幸運地（語意相反）；(D) thoroughly 徹底地，均不符。",
+    optionNotes:[
+      {word:"adversely",zh:"負面地；不利地",syn:"negatively, harmfully, detrimentally",ex:"The drought adversely affected crop yields across the region."},
+      {word:"shortly",zh:"不久後；很快地",syn:"soon, before long, in a moment",ex:"The CEO will arrive shortly to address the shareholders."},
+      {word:"fortunately",zh:"幸運地；幸好",syn:"luckily, happily, by good fortune",ex:"Fortunately, no one was injured in the accident."},
+      {word:"thoroughly",zh:"徹底地；完全地；仔細地",syn:"completely, exhaustively, carefully",ex:"Please review the contract thoroughly before signing."},
+    ]},
+  { num:7, answer:"D", stem:"The human resources department evaluated employee ________ and categorized everyone into five groups.",
+    options:["performing","perform","performed","performance"],
+    explanation:"正解 (D) performance（表現；績效）名詞。空格在 employee 後，需要名詞作受詞。employee performance = 員工績效，是商業英文核心詞組。(A)(B)(C) 均為動詞形式，不可作名詞受詞。",
+    optionNotes:[
+      {word:"performing",zh:"（v.）正在執行的；（adj.）表演的",syn:null,ex:"The performing arts center hosts concerts every weekend."},
+      {word:"perform",zh:"（v.）執行；表演；表現",syn:"carry out, execute, conduct",ex:"Surgeons performed a successful operation on the patient."},
+      {word:"performed",zh:"（v.）執行過的（過去式/過去分詞）",syn:null,ex:"The task was performed ahead of schedule."},
+      {word:"performance",zh:"（n.）表現；績效；表演",syn:"result, output, achievement",ex:"Her performance review showed excellent results across all metrics."},
+    ]},
+  { num:8, answer:"C", stem:"Office leases ________ that employees must sign in at the security desk when entering and exiting the building after regular business hours.",
+    options:["recruit","display","state","deliver"],
+    explanation:"正解 (C) state（規定；聲明；載明）= 租約「載明」員工在非上班時間進出大樓必須登記。(A) recruit 招募；(B) display 展示；(D) deliver 遞送，均不符。",
+    optionNotes:[
+      {word:"recruit",zh:"招募；徵召",syn:"hire, enlist, sign up",ex:"The company is actively recruiting software engineers."},
+      {word:"display",zh:"展示；陳列；顯示",syn:"show, exhibit, present",ex:"The latest products are on display at the trade fair."},
+      {word:"state",zh:"（v.）規定；聲明；陳述 / （n.）狀態；州",syn:"specify, declare, stipulate",ex:"The contract clearly states that payment is due within 30 days."},
+      {word:"deliver",zh:"遞送；交付；發表（演講）",syn:"send, dispatch, convey",ex:"The package will be delivered by Thursday."},
+    ]},
+  { num:9, answer:"B", stem:"Generally, German automobiles continue to ________ their value because of their popularity not only domestically but also in the international market.",
+    options:["finance","retain","restrain","stabilize"],
+    explanation:"正解 (B) retain（保留；維持）= retain value = 保值，多益與商業英文高頻搭配。(A) finance 融資；(C) restrain 抑制（restrain value 不自然）；(D) stabilize 穩定，均不如 retain 精確。",
+    optionNotes:[
+      {word:"finance",zh:"（v.）融資；資助 / （n.）財務；金融",syn:"fund, back, sponsor",ex:"The expansion was financed through bank loans."},
+      {word:"retain",zh:"保留；維持；留住",syn:"keep, maintain, preserve",ex:"The company worked hard to retain its top talent."},
+      {word:"restrain",zh:"抑制；克制；限制",syn:"control, hold back, restrict",ex:"The government took steps to restrain inflation."},
+      {word:"stabilize",zh:"使穩定；穩定下來",syn:"steady, level off, balance",ex:"The central bank intervened to stabilize the currency."},
+    ]},
+  { num:10, answer:"C", stem:"Each employee was clearly instructed that under no circumstances are they allowed to remove computers from the ________.",
+    options:["faculty","decade","premises","authority"],
+    explanation:"正解 (C) premises（場所；公司場地）= 員工不得將電腦帶離「公司場所」，與 Section 1 的詞彙代換呼應。(A) faculty 教職員；(B) decade 十年；(D) authority 權威/當局，均不符。",
+    optionNotes:[
+      {word:"faculty",zh:"教職員；學院；（身心）能力",syn:"staff, teaching body",ex:"The faculty voted to approve the new curriculum."},
+      {word:"decade",zh:"十年",syn:"ten years, ten-year period",ex:"The company has grown rapidly over the past decade."},
+      {word:"premises",zh:"場所；房舍及附屬地（複數）",syn:"property, building, facility, site",ex:"All visitors must wear ID badges on the premises."},
+      {word:"authority",zh:"權威；當局；授權",syn:"power, jurisdiction, official body",ex:"The local authority approved the construction plan."},
+    ]},
+  { num:11, answer:"A", stem:"Because the vice-president always took time to listen to ideas and have conversation, she was admired by staff and customers ________.",
+    options:["alike","though","furthermore","thereby"],
+    explanation:"正解 (A) alike（同樣地；兩者皆然）= staff and customers alike = 員工和顧客都...，是固定搭配。(B) though 雖然（放句尾也可，但語意不符）；(C) furthermore 此外（副詞連接詞）；(D) thereby 因此，均不符。",
+    optionNotes:[
+      {word:"alike",zh:"（adj./adv.）相像的；同樣地；兩者皆然",syn:"equally, both, similarly",ex:"The policy applies to managers and staff alike."},
+      {word:"though",zh:"雖然；儘管；不過（放句尾時=however）",syn:"however, although, even so",ex:"It was a tough year. We managed to grow, though."},
+      {word:"furthermore",zh:"此外；而且（連接詞副詞）",syn:"moreover, in addition, besides",ex:"The product is affordable; furthermore, it is eco-friendly."},
+      {word:"thereby",zh:"因此；從而；藉此",syn:"thus, as a result, consequently",ex:"She studied hard, thereby improving her test scores."},
+    ]},
+  { num:12, answer:"A", stem:"________ initial testing of the printer has been completed, the technical team will make necessary modifications.",
+    options:["Now that","Whether","Only if","Despite"],
+    explanation:"正解 (A) Now that（既然；由於...已經）= 初步測試已完成，既然如此，技術團隊將進行修改。表示前提已達成後的下一步行動。(B) Whether 是否；(C) Only if 只有在...才；(D) Despite 儘管（介詞，後接名詞），均不符。",
+    optionNotes:[
+      {word:"Now that",zh:"既然；由於...已經（表前提已成立）",syn:"since, given that, seeing that",ex:"Now that the report is done, we can move on to the next phase."},
+      {word:"Whether",zh:"是否；不管...還是",syn:"if, regardless of whether",ex:"Whether you agree or not, the decision has been made."},
+      {word:"Only if",zh:"只有在...才（表嚴格條件）",syn:"only when, strictly conditional on",ex:"Only if both parties agree can the contract be changed."},
+      {word:"Despite",zh:"儘管；雖然（介詞，後接名詞/動名詞）",syn:"in spite of, notwithstanding",ex:"Despite the rain, the event proceeded as planned."},
+    ]},
+];
+
+const part5Data = [
+  { num:1, answer:"A", stem:"Promotional materials ________ Star Business Academy's courses will be on display at the open house on Sunday.",
+    options:["about","among","into","over"],
+    explanation:"正解 (A) about（關於）。materials about sth = 關於某事的材料，是固定介詞搭配。promotional materials about our courses = 關於課程的宣傳材料。(B) among 在...之中；(C) into 進入；(D) over 超過/在...上方，均不符。",
+    vocabNotes:[
+      {word:"promotional materials",note:"宣傳材料；promotional (adj.) 促銷的、宣傳的；materials = 資料/材料",ex:"Please distribute the promotional materials at the entrance."},
+      {word:"open house",note:"開放日；參觀日（讓公眾參觀的活動）",ex:"The school holds an open house every September for new families."},
+    ]},
+  { num:2, answer:"D", stem:"Savarini Construction has been the ________ housebuilder in the region for the past decade.",
+    options:["leadership","led","leader","leading"],
+    explanation:"正解 (D) leading（領先的；首要的）形容詞。空格修飾名詞 housebuilder，需形容詞。the leading + 名詞 = 最領先的...，多益高頻搭配。(A) leadership 名詞；(B) led 動詞過去式；(C) leader 名詞，均不能修飾名詞。",
+    vocabNotes:[
+      {word:"leading (adj.)",note:"領先的；首要的；主要的 → the leading + 名詞；lead (v.) → leader (n.) → leading (adj.)",ex:"She is one of the leading experts in renewable energy."},
+      {word:"decade (n.)",note:"十年；for the past decade = 在過去十年間",ex:"The company has dominated the market for the past decade."},
+    ]},
+  { num:3, answer:"C", stem:"Mr. Amal Alsomali has been tasked with ________ mobile technologies at Zoreh Ltd.",
+    options:["oversee","overseen","overseeing","will oversee"],
+    explanation:"正解 (C) overseeing（監督）動名詞。be tasked with + V-ing = 被分配做某事，固定搭配必須接動名詞。(A) oversee 原形；(B) overseen 過去分詞；(D) will oversee 未來式，均不能跟在介詞 with 後面。",
+    vocabNotes:[
+      {word:"be tasked with + V-ing",note:"被分配負責...；be assigned to do sth 的常見替換",ex:"She was tasked with managing the company's social media accounts."},
+      {word:"oversee (v.)",note:"監督；監管；管理 = supervise, manage；名詞：oversight（監督/疏忽）",ex:"The director will oversee the entire project from start to finish."},
+    ]},
+  { num:4, answer:"B", stem:"At Saiko Hinshitsu Insurance, transparency and open communication are high ________.",
+    options:["consequences","priorities","stories","honors"],
+    explanation:"正解 (B) priorities（優先事項；首要任務）= transparency and communication are high priorities = 透明度和溝通是首要任務，固定搭配。(A) consequences 後果；(C) stories 故事；(D) honors 榮譽，均不符。",
+    vocabNotes:[
+      {word:"priority (n.)",note:"優先事項；首要任務；high priority = 高度優先；prioritize (v.) = 優先處理",ex:"Customer satisfaction is our top priority."},
+      {word:"transparency (n.)",note:"透明度；透明性；transparent (adj.) = 透明的、公開的",ex:"The company promotes transparency in all financial reporting."},
+    ]},
+  { num:5, answer:"D", stem:"The ________ merger of Optera Chemical and Clough Pharmaceuticals is one of many items on the meeting agenda.",
+    options:["occasional","accurate","identical","upcoming"],
+    explanation:"正解 (D) upcoming（即將到來的）= upcoming merger = 即將進行的合併，與 Week 1 的 upcoming 呼應，多益超高頻詞。(A) occasional 偶爾的；(B) accurate 準確的；(C) identical 相同的，均語意不符。",
+    vocabNotes:[
+      {word:"upcoming (adj.)",note:"即將到來的；即將發生的 = forthcoming, approaching",ex:"The upcoming merger will create one of the largest firms in the industry."},
+      {word:"merger (n.)",note:"合併；兩公司合為一體；merge (v.) 合併；acquisition 收購（買下另一公司）",ex:"The merger was approved by shareholders and regulators."},
+    ]},
+  { num:6, answer:"A", stem:"The author would like to express her ________ to the editors for their assistance with her novel.",
+    options:["appreciation","appreciate","appreciative","appreciatively"],
+    explanation:"正解 (A) appreciation（感謝；欣賞）名詞。express her + 名詞 = 表達她的...，需名詞。express appreciation = 表達感謝，固定搭配。(B) appreciate 動詞；(C) appreciative 形容詞；(D) appreciatively 副詞，均不符。",
+    vocabNotes:[
+      {word:"appreciation (n.)",note:"感謝；欣賞；增值；express appreciation = 表達感謝；in appreciation of = 為了感謝",ex:"She sent flowers in appreciation of their support during the difficult time."},
+      {word:"appreciate (v.)",note:"感謝；欣賞；（價值）上升；I would appreciate it if... = 如果...我會很感激",ex:"We appreciate your patience during the system upgrade."},
+    ]},
+  { num:7, answer:"B", stem:"Because of ________ weather conditions, the nature walk will be rescheduled.",
+    options:["routine","severe","absolute","concerned"],
+    explanation:"正解 (B) severe（嚴峻的；惡劣的）= severe weather conditions = 惡劣天氣狀況，多益高頻搭配。(A) routine 例行的；(C) absolute 絕對的；(D) concerned 擔心的（形容人而非天氣），均不符。",
+    vocabNotes:[
+      {word:"severe (adj.)",note:"嚴峻的；惡劣的；嚴重的；搭配：severe weather / severe penalty / severe shortage",ex:"The region experienced severe flooding after three days of heavy rain."},
+      {word:"reschedule (v.)",note:"改期；重新安排時間；reschedule a meeting / event / appointment",ex:"Due to the typhoon, the conference has been rescheduled to next Friday."},
+    ]},
+];
+
+const part6Data = [
+  { num:8, answer:"A", stem:"The Oaktown Classic Cinema (OCC) ________ movie tickets at half price on weekends during the summer months.",
+    options:["will sell","sold","had sold","sell"],
+    explanation:"正解 (A) will sell（將會銷售）= 這是一則公告（notice），描述即將發生的計劃，用未來式 will + V。(B) sold 過去式；(C) had sold 過去完成式；(D) sell 原形（缺主詞一致性，OCC 是單數需 sells），均不符。",
+    vocabNotes:[
+      {word:"at half price",note:"以半價；half-price (adj.) 半價的；搭配：at a discount / at full price",ex:"All items are available at half price during the clearance sale."},
+      {word:"classic (adj./n.)",note:"(adj.) 經典的；一流的；(n.) 經典作品；classic movies = 經典電影",ex:"Casablanca remains one of the greatest cinema classics."},
+    ]},
+  { num:9, answer:"C", stem:"We will also, however, offer one ________ film per day, usually in the evening.",
+    options:["absent","mixed","current","preliminary"],
+    explanation:"正解 (C) current（當代的；現今的）= one current film = 一部現代/當前上映的電影（相對於前文提到的 classic movies）。前後文對比：週末放經典老片，但也會每天放一部「現代」新片。(A) absent 缺席的；(B) mixed 混合的；(D) preliminary 初步的，均不符。",
+    vocabNotes:[
+      {word:"current (adj.)",note:"當前的；現今的；流行的；名詞：currency 貨幣/流通",ex:"The current lineup of films includes several award winners."},
+      {word:"preliminary (adj.)",note:"初步的；預備的；preliminary results = 初步結果",ex:"Preliminary tests suggest the drug is safe and effective."},
+    ]},
+  { num:10, answer:"B", stem:"選擇最適合插入的句子",
+    options:["The OCC has been in business for over three decades.","Besides tickets for individual shows, monthly passes are also available.","No outside food or drinks are permitted, as the theater has a concessions area.","Last year, the OCC was closed for two weeks for renovations."],
+    explanation:"正解 (B) Besides tickets for individual shows, monthly passes are also available.（除了單場票之外，月票也有提供。）前句說「OCC 提供三種選項，包括一種無限制觀影」，後文需要說明這些票券選項的細節，(B) 提到月票的存在，與「三種選項」和「無限制觀影」語意最連貫。(A)(C)(D) 均為不相關的補充資訊。",
+    vocabNotes:[
+      {word:"monthly pass",note:"月票；月票制度；pass = 通行證/票券；annual pass = 年票",ex:"The museum offers a monthly pass for frequent visitors."},
+      {word:"concessions area",note:"（戲院、體育場等的）餐飲販賣區；concession (n.) 特許權/讓步/小賣店",ex:"Popcorn and drinks are available at the concessions area."},
+    ]},
+  { num:11, answer:"A", stem:"The cinema will publish its list of summer movies ________ the end of May.",
+    options:["by","on","inside","beside"],
+    explanation:"正解 (A) by（在...之前；不晚於）= by the end of May = 在五月底之前，表示截止時間，是多益超高頻介詞用法。(B) on the end 語法錯誤；(C) inside the end 不符合英文習慣；(D) beside 在...旁邊（位置介詞），均不符。",
+    vocabNotes:[
+      {word:"by (prep.)",note:"在...之前（表截止）= no later than；by + 時間點：by Friday / by noon / by the end of the month",ex:"Please submit your report by the end of the business day."},
+      {word:"publish (v.)",note:"公布；發布；出版；publish a list/report/article",ex:"The results will be published on the company website next Monday."},
+    ]},
+];
+
+// ── RENDER ─────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Synonym blocks
+  const sb = document.getElementById('syn-blocks');
+  synData.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'syn-block';
+    div.innerHTML = `
+      <div class="syn-q">Q: ${s.q}</div>
+      <div class="syn-answer">A: ${s.answer}</div>
+      <div style="margin-top:6px;">
+        <span class="syn-word">${s.word}</span> = <span class="syn-meaning">${s.meaning}</span>
+      </div>
+      <div style="background:#fff;border-radius:5px;padding:6px 10px;margin-top:6px;font-size:12px;color:#1A3C6E;">${s.note}</div>
+      <div style="font-style:italic;color:#333;font-size:12px;margin-top:5px;">${s.ex1}</div>
+      <div style="color:#6B7A99;font-size:12px;margin-bottom:3px;">${s.ex1zh}</div>
+      <div style="font-style:italic;color:#333;font-size:12px;">${s.ex2}</div>
+      <div style="color:#6B7A99;font-size:12px;">${s.ex2zh}</div>`;
+    sb.appendChild(div);
+  });
+
+  const t3 = document.getElementById('theme3-words');
+  theme3.forEach(w => makeWordCard(w, t3));
+  const t4 = document.getElementById('theme4-words');
+  theme4.forEach(w => makeWordCard(w, t4));
+
+  const vp = document.getElementById('vocab-practice-questions');
+  vocabPracticeData.forEach(q => makeQuizCard(q, vp, true));
+
+  const p5 = document.getElementById('part5-questions');
+  part5Data.forEach(q => makeQuizCard(q, p5, false));
+
+  const p6 = document.getElementById('part6-questions');
+  part6Data.forEach(q => makeQuizCard(q, p6, false));
+});
+</script>
+</body>
+</html>

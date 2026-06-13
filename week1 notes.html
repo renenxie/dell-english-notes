@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 新多益筆記 — Part 1 照片題</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #F7F9FC; font-family: -apple-system, "Segoe UI", system-ui, sans-serif; }
+
+  /* HEADER */
+  .header { background: #1A3C6E; color: #fff; padding: 18px 20px 0; position: sticky; top: 0; z-index: 100; }
+  .header-eyebrow { font-size: 11px; letter-spacing: 2px; opacity: 0.65; text-transform: uppercase; margin-bottom: 4px; }
+  .header-title { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+  .header-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; margin-bottom: 14px; }
+  .nav { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn { background: transparent; color: rgba(255,255,255,0.7); border: none; border-radius: 8px 8px 0 0; padding: 8px 14px; cursor: pointer; font-weight: 700; font-size: 13px; white-space: nowrap; transition: all 0.15s; }
+  .nav-btn.active { background: #E8501A; color: #fff; }
+
+  /* CONTENT */
+  .content { padding: 20px 16px; max-width: 780px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARD */
+  .card { background: #fff; border: 1px solid #D8E2F0; border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; }
+  .card-blue { background: #EAF0FB; border-color: rgba(26,60,110,0.18); }
+  .card-orange { background: #FFF8F5; border-color: rgba(232,80,26,0.25); }
+  .card-indigo { background: #F0F5FF; border-color: rgba(26,60,110,0.18); }
+  .card-gray { background: #F5F7FA; border-color: #D8E2F0; }
+
+  /* SECTION TITLE */
+  .section-title { color: #1A3C6E; font-size: 15px; font-weight: 800; margin-bottom: 10px; border-bottom: 2px solid #E8501A; padding-bottom: 5px; }
+
+  /* BADGE */
+  .badge { display: inline-block; border-radius: 4px; font-size: 11px; font-weight: 700; padding: 1px 7px; letter-spacing: 0.5px; text-transform: uppercase; margin-right: 6px; }
+  .badge-primary { background: rgba(26,60,110,0.1); color: #1A3C6E; border: 1px solid rgba(26,60,110,0.25); }
+  .badge-accent { background: rgba(232,80,26,0.1); color: #E8501A; border: 1px solid rgba(232,80,26,0.25); }
+
+  /* STRATEGY ITEMS */
+  .strategy-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 14px; color: #333; line-height: 1.6; }
+  .scene-item { margin-bottom: 8px; font-size: 13px; }
+  .scene-label { font-weight: 700; color: #1A3C6E; }
+  .scene-words { color: #555; }
+
+  /* WORD CARD */
+  .word-card { border-left: 3px solid #1A3C6E; padding-left: 12px; margin-bottom: 14px; }
+  .word-header { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 0; flex-wrap: wrap; }
+  .word-en { font-weight: 800; font-size: 15px; color: #1A3C6E; }
+  .word-zh { color: #E8501A; font-weight: 700; }
+  .word-toggle { margin-left: auto; color: #6B7A99; font-size: 12px; }
+  .word-body { display: none; margin-top: 8px; font-size: 13px; }
+  .word-body.open { display: block; }
+  .word-syn { color: #6B7A99; margin-bottom: 4px; }
+  .word-syn span { color: #1A7A4A; font-weight: 600; }
+  .word-note { background: #EAF0FB; border-radius: 6px; padding: 5px 10px; margin-bottom: 6px; color: #1A3C6E; }
+  .word-ex-en { color: #333; font-style: italic; margin-bottom: 3px; }
+  .word-ex-zh { color: #6B7A99; margin-bottom: 6px; }
+
+  /* QUIZ */
+  .quiz-card { background: #fff; border: 1px solid #D8E2F0; border-left: 4px solid #D8E2F0; border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; transition: border-left-color 0.2s; }
+  .quiz-card.revealed { border-left-color: #1A7A4A; }
+  .quiz-card.vocab-revealed { border-left-color: #E8501A; }
+  .quiz-stem { font-weight: 700; color: #1A3C6E; margin-bottom: 8px; font-size: 14px; }
+  .quiz-stem span { font-weight: 400; color: #222; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-bottom: 10px; }
+  .quiz-option { padding: 5px 8px; border-radius: 5px; font-size: 13px; background: #F5F7FA; border: 1px solid transparent; line-height: 1.5; }
+  .quiz-option.correct { background: #E8F7EE; color: #1A7A4A; font-weight: 700; border-color: #1A7A4A; }
+  .quiz-option.wrong { background: rgba(254,240,235,0.5); }
+  .btn { border: none; border-radius: 6px; padding: 7px 16px; cursor: pointer; font-size: 13px; font-weight: 700; }
+  .btn-primary { background: #1A3C6E; color: #fff; }
+  .btn-accent { background: #E8501A; color: #fff; }
+  .answer-box { background: #E8F7EE; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; color: #1A7A4A; font-weight: 700; font-size: 13px; }
+  .explanation { color: #333; font-size: 13px; margin-bottom: 8px; line-height: 1.6; }
+  .vocab-note { background: #EAF0FB; border-radius: 5px; padding: 6px 10px; margin-bottom: 4px; font-size: 12px; }
+  .vocab-note-word { font-weight: 700; color: #1A3C6E; }
+  .vocab-note-ex { font-style: italic; color: #6B7A99; margin-top: 2px; }
+  .option-notes-title { font-weight: 700; color: #1A3C6E; margin-bottom: 4px; font-size: 13px; }
+  .option-note { background: #F5F7FA; border-radius: 5px; padding: 6px 10px; margin-bottom: 5px; font-size: 12px; }
+  .option-note-word { font-weight: 700; color: #E8501A; }
+  .option-note-zh { color: #6B7A99; }
+  .option-note-syn { color: #1A7A4A; }
+  .option-note-ex { font-style: italic; color: #555; margin-top: 2px; }
+
+  /* PASSAGE */
+  .passage { background: #F5F7FA; border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.8; color: #333; margin-bottom: 10px; }
+  .blank-highlight { background: #FFE066; border-radius: 3px; padding: 0 3px; font-weight: 700; }
+  .part-label { font-weight: 800; color: #1A3C6E; margin: 16px 0 8px; font-size: 15px; }
+
+  /* HINT */
+  .hint { color: #6B7A99; font-size: 12px; margin-bottom: 12px; }
+
+  /* ANSWER SUMMARY */
+  .answer-summary { color: #6B7A99; font-size: 12px; margin-top: 2px; }
+
+  @media (max-width: 480px) {
+    .quiz-options { grid-template-columns: 1fr; }
+    .header-title { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">新多益實力衝刺</div>
+  <div class="header-title">Week 1 — Part 1 照片題重點筆記</div>
+  <div class="header-sub">加強識別生活物件的字彙能力 ｜ Instructor: Len Wang</div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showSection(0)">解題技巧</button>
+    <button class="nav-btn" onclick="showSection(1)">重要單字片語</button>
+    <button class="nav-btn" onclick="showSection(2)">高分主題字彙</button>
+    <button class="nav-btn" onclick="showSection(3)">高分字彙練習</button>
+    <button class="nav-btn" onclick="showSection(4)">閱讀小考詳解</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 0: 解題技巧 -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section active" id="sec-0">
+  <div class="card">
+    <div class="section-title">📸 Part 1 核心策略：字彙決定勝負</div>
+    <p style="color:#444;font-size:14px;line-height:1.7;margin-bottom:12px;">Part 1 照片題的關鍵在於「你是否認識所聽到的單字與表達方式」。考的不是邏輯推理，而是字彙量。近年多益開始考較難的物件字彙（例如 tent → canopy 帳篷頂蓋），因此必須系統性地累積「描述日常事物」的英文。</p>
+    <div class="strategy-item"><span class="badge badge-accent">策略1</span>先看圖，預測可能出現的動詞（人物動作題）或名詞（物件 / 場景題）</div>
+    <div class="strategy-item"><span class="badge badge-accent">策略2</span>注意主被動：The man is fixing the car. vs. The car is being fixed.</div>
+    <div class="strategy-item"><span class="badge badge-accent">策略3</span>注意位置介系詞：beside / alongside / in the background / in the foreground</div>
+    <div class="strategy-item"><span class="badge badge-accent">策略4</span>近義替換陷阱：coach（馬車）≠ wheelchair；sail（帆）≠ pole（桿）</div>
+  </div>
+  <div class="card">
+    <div class="section-title">🔤 常見 Part 1 句型與動詞</div>
+    <p style="color:#444;font-size:14px;line-height:1.7;margin-bottom:12px;">以下是高頻出現的描述句型，務必熟記：</p>
+    <div class="strategy-item"><span class="badge badge-primary">進行式</span>S + is/are + V-ing（描述正在發生的動作）→ The man is straightening his tie.</div>
+    <div class="strategy-item"><span class="badge badge-primary">完成被動</span>S + has/have been + p.p.（描述已完成的狀態）→ A plant has been placed on the desk.</div>
+    <div class="strategy-item"><span class="badge badge-primary">被動進行</span>S + is/are being + p.p.（正在被...）→ Labels are being attached to the products.</div>
+    <div class="strategy-item"><span class="badge badge-primary">位置描述</span>S + is/are + 位置（描述靜止位置）→ The trash bin is placed beside the window.</div>
+  </div>
+  <div class="card">
+    <div class="section-title">🖼️ Part 1 高頻單字場景速查</div>
+    <div class="scene-item"><span class="scene-label">室內辦公：</span><span class="scene-words">cupboard 櫃子 / utensils 餐具 / trash bin 垃圾桶 / curtain 窗簾 / stack 堆疊</span></div>
+    <div class="scene-item"><span class="scene-label">戶外場景：</span><span class="scene-words">fountain 噴泉 / canopy 頂篷 / parasol 陽傘 / lane 車道 / shadow 陰影</span></div>
+    <div class="scene-item"><span class="scene-label">人物動作：</span><span class="scene-words">stroll 散步 / straighten 整理 / roll up 捲起 / punch (numbers) 按(數字) / cluttered 雜亂的</span></div>
+    <div class="scene-item"><span class="scene-label">物品描述：</span><span class="scene-words">garment 衣物 / label 標籤 / sail 帆 / pole 桿 / notebook 筆記本</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 1: 重要單字片語 -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-1">
+  <div class="hint">點擊單字展開用法與例句 ▼</div>
+  <div id="phrase-words"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 2: 高分主題字彙 -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-2">
+  <div class="card card-blue">
+    <div style="font-weight:800;color:#1A3C6E;margin-bottom:4px;">📌 主題字彙 (1)：公司部門與職稱</div>
+    <div class="hint" style="margin:0;">點擊各單字展開完整用法與補充例句</div>
+  </div>
+  <div id="theme1-words"></div>
+  <div class="card card-blue" style="margin-top:8px;">
+    <div style="font-weight:800;color:#1A3C6E;margin-bottom:4px;">📌 主題字彙 (2)：公司結構</div>
+    <div class="hint" style="margin:0;">點擊各單字展開完整用法與補充例句</div>
+  </div>
+  <div id="theme2-words"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 3: 高分字彙練習 -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-3">
+  <div class="card card-orange">
+    <div style="font-weight:800;color:#E8501A;">📝 高分字彙練習（共 12 題）</div>
+    <div class="answer-summary">解答（講義核對）：1~6: B D D B D C ｜ 7~12: D D B D D B</div>
+  </div>
+  <div id="vocab-practice-questions"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 4: 閱讀小考 -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-4">
+  <div class="card card-indigo">
+    <div style="font-weight:800;color:#1A3C6E;">📋 Week 1 閱讀小考詳解</div>
+    <div class="answer-summary">Part 5 解答（講義核對）：D B C D B B D<br>Part 6 解答（講義核對）：B C D A</div>
+  </div>
+  <div class="part-label">Part 5（第 1–7 題）</div>
+  <div id="part5-questions"></div>
+  <div class="part-label">Part 6（第 8–11 題）</div>
+  <div class="card card-gray">
+    <div style="font-weight:700;color:#1A3C6E;margin-bottom:8px;">📄 廣告文章：Williamsen Computer Solutions</div>
+    <div class="passage">
+      Is your computer running more <span class="blank-highlight">[8]</span> than usual? Do you need help installing applications or upgrading your operating system? <span class="blank-highlight">[9]</span>. If you require assistance with any number of common maintenance issues, bring your computer to Williamsen Computer Solutions. Our team of trained experts will perform a complimentary check of its functionality and <span class="blank-highlight">[10]</span> the best course of action. <span class="blank-highlight">[11]</span> us a call today at 555-0165.
+    </div>
+  </div>
+  <div id="part6-questions"></div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// ── NAV ──────────────────────────────────────────────
+function showSection(idx) {
+  document.querySelectorAll('.section').forEach((s,i) => s.classList.toggle('active', i===idx));
+  document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  window.scrollTo(0,0);
+}
+
+// ── WORD CARD ─────────────────────────────────────────
+function makeWordCard(w, container) {
+  const div = document.createElement('div');
+  div.className = 'word-card';
+  div.innerHTML = `
+    <div class="word-header" onclick="toggleWord(this)">
+      <span class="word-en">${w.en}</span>
+      ${w.pos ? `<span class="badge badge-primary">${w.pos}</span>` : ''}
+      <span class="word-zh">${w.zh}</span>
+      <span class="word-toggle">▼</span>
+    </div>
+    <div class="word-body">
+      ${w.synonyms ? `<div class="word-syn">≈ 近義 / 相關：<span>${w.synonyms}</span></div>` : ''}
+      ${w.note ? `<div class="word-note">${w.note}</div>` : ''}
+      <div class="word-ex-en">${w.example.en}</div>
+      <div class="word-ex-zh">${w.example.zh}</div>
+      ${w.extraExample ? `<div class="word-ex-en" style="margin-top:6px">${w.extraExample.en}</div><div class="word-ex-zh">${w.extraExample.zh}</div>` : ''}
+    </div>`;
+  container.appendChild(div);
+}
+
+function toggleWord(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.word-toggle');
+  const open = body.classList.toggle('open');
+  toggle.textContent = open ? '▲' : '▼';
+}
+
+// ── QUIZ CARD ─────────────────────────────────────────
+function makeQuizCard(q, container, isVocab) {
+  const letters = ['A','B','C','D'];
+  const div = document.createElement('div');
+  div.className = 'quiz-card';
+  const optionsHtml = q.options.map((o,i) => `<div class="quiz-option" data-letter="${letters[i]}">(${letters[i]}) ${o}</div>`).join('');
+  const notesHtml = q.vocabNotes ? q.vocabNotes.map(v => `
+    <div class="vocab-note">
+      <span class="vocab-note-word">${v.word}</span> — ${v.note}
+      ${v.ex ? `<div class="vocab-note-ex">${v.ex}</div>` : ''}
+    </div>`).join('') : '';
+  const optionNotesHtml = q.optionNotes ? `
+    <div class="option-notes-title">各選項補充：</div>
+    ${q.optionNotes.map((v,i) => `
+      <div class="option-note">
+        <span class="option-note-word">(${letters[i]}) ${v.word}</span>
+        <span class="option-note-zh"> — ${v.zh}</span>
+        ${v.syn ? `<span class="option-note-syn"> ≈ ${v.syn}</span>` : ''}
+        ${v.ex ? `<div class="option-note-ex">${v.ex}</div>` : ''}
+      </div>`).join('')}` : '';
+  div.innerHTML = `
+    <div class="quiz-stem">Q${q.num}. <span>${q.stem}</span></div>
+    <div class="quiz-options">${optionsHtml}</div>
+    <button class="btn ${isVocab ? 'btn-accent' : 'btn-primary'}" onclick="revealAnswer(this,'${q.answer}',${isVocab})">查看答案與解析</button>
+    <div class="quiz-revealed" style="display:none;font-size:13px;">
+      <div class="answer-box">✅ 正解：(${q.answer})${isVocab ? ' — ' + q.explanation : ''}</div>
+      ${!isVocab ? `<div class="explanation">${q.explanation}</div>` : ''}
+      ${notesHtml}
+      ${optionNotesHtml}
+    </div>`;
+  container.appendChild(div);
+}
+
+function revealAnswer(btn, answer, isVocab) {
+  const card = btn.closest('.quiz-card');
+  card.classList.add(isVocab ? 'vocab-revealed' : 'revealed');
+  card.querySelectorAll('.quiz-option').forEach(opt => {
+    const letter = opt.dataset.letter;
+    if (letter === answer) opt.classList.add('correct');
+    else opt.classList.add('wrong');
+  });
+  btn.style.display = 'none';
+  card.querySelector('.quiz-revealed').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════
+const phraseData = [
+  { en: "stroll side by side", pos: "v. phr.", zh: "並肩漫步", synonyms: "walk together, walk alongside each other",
+    note: "side by side = 並肩、一起；常出現在 Part 1 描述兩人一起行走的場景",
+    example: { en: "The man and the woman are strolling side by side.", zh: "男人和女人並肩漫步。" },
+    extraExample: { en: "They have worked side by side for over ten years.", zh: "他們並肩工作超過十年。" } },
+  { en: "clutter (with)", pos: "v.", zh: "使雜亂；堆滿", synonyms: "fill, crowd, mess up",
+    note: "clutter (n.) 雜物、凌亂 / cluttered (adj.) 雜亂的 — The table is cluttered with books and papers.",
+    example: { en: "The table is cluttered with books and papers.", zh: "桌上堆滿了書和文件。" },
+    extraExample: { en: "Please don't clutter your desk with unnecessary items.", zh: "請不要讓不必要的東西把桌子弄得亂七八糟。" } },
+  { en: "roll up (one's sleeves)", pos: "v. phr.", zh: "捲起袖子；準備大幹一場", synonyms: "fold up, turn up",
+    note: "字面義：捲袖子；引申義：準備認真工作",
+    example: { en: "The man has rolled up his shirt sleeves.", zh: "那名男子捲起了襯衫袖子。" },
+    extraExample: { en: "It's time to roll up our sleeves and get to work.", zh: "是時候捲起袖子認真工作了。" } },
+  { en: "line up", pos: "v. phr.", zh: "排隊；排列", synonyms: "queue up, stand in line",
+    note: "People have lined up to board the boat. (已排好隊=完成式)",
+    example: { en: "People have lined up to board the boat.", zh: "人們已排隊等待上船。" },
+    extraExample: { en: "Customers lined up outside the store before it opened.", zh: "顧客在商店開門前就在外面排隊了。" } },
+  { en: "cast a shadow", pos: "v. phr.", zh: "投下陰影", synonyms: "shade, block the light",
+    note: "The tree is casting a shadow on the road. — 也可引申為「帶來負面影響」",
+    example: { en: "The tree is casting a shadow on the road.", zh: "樹在路上投下了陰影。" },
+    extraExample: { en: "The scandal cast a shadow over the company's reputation.", zh: "這樁醜聞給公司聲譽蒙上了陰影。" } },
+  { en: "pile (on/up)", pos: "v.", zh: "堆疊；堆積", synonyms: "stack, heap",
+    note: "piled (adj.) 堆放的；Some dishes are piled on the chair. 注意 piled on / stacked on 常互換",
+    example: { en: "Some dishes are piled on the chair.", zh: "一些盤子堆放在椅子上。" },
+    extraExample: { en: "Work has been piling up since she went on leave.", zh: "自從她請假以來，工作一直積壓著。" } },
+  { en: "attach (to)", pos: "v.", zh: "貼附；附上", synonyms: "stick, fasten, affix",
+    note: "Labels are being attached to the products. — attach 也可用於 email：Please find the document attached.",
+    example: { en: "Labels are being attached to the products.", zh: "標籤正被貼在產品上。" },
+    extraExample: { en: "Please attach your resume to the email.", zh: "請將您的履歷附在電子郵件中。" } },
+  { en: "utensil", pos: "n.", zh: "餐具；用具", synonyms: "cutlery, tool, implement",
+    note: "eating utensils = 餐具（叉、刀、湯匙等）；kitchen utensils = 廚房用具",
+    example: { en: "Eating utensils have been arranged on the table.", zh: "餐具已整齊地擺放在桌上。" },
+    extraExample: { en: "The kitchen utensils are stored in the drawer.", zh: "廚房用具存放在抽屜裡。" } },
+  { en: "garment", pos: "n.", zh: "衣物；服裝", synonyms: "clothing, apparel, attire",
+    note: "較正式的衣物說法，多益 Part 1 常見；garments for sale = 待售服裝",
+    example: { en: "Garments for sale are spread on the floor.", zh: "待售的衣物鋪展在地板上。" },
+    extraExample: { en: "The factory produces garments for major fashion brands.", zh: "這家工廠為主要時裝品牌生產服裝。" } },
+  { en: "canopy", pos: "n.", zh: "頂篷；遮篷（= tent overhead cover）", synonyms: "awning, cover, shade",
+    note: "多益近年常考的難詞：tent = canopy（帳篷的頂部遮蓋物）",
+    example: { en: "The outdoor market stalls were protected by colorful canopies.", zh: "戶外市場攤位由色彩繽紛的頂篷保護著。" },
+    extraExample: { en: "A canopy of leaves shaded the forest path.", zh: "一頂葉冠為森林小徑遮蔭。" } },
+];
+
+const themeVocab1 = [
+  { en: "administrator", pos: "n.", zh: "行政人員；管理員", synonyms: "manager, director, coordinator",
+    note: "動詞形：administer (v.) 管理、執行；名詞形：administration 行政/管理",
+    example: { en: "The school administrator is responsible for overseeing the daily operations of the school.", zh: "學校管理者負責監督學校的日常運作。" },
+    extraExample: { en: "The hospital administrator approved the new budget plan.", zh: "醫院行政人員批准了新的預算計劃。" } },
+  { en: "assistant manager", pos: "n. phr.", zh: "副理", synonyms: "deputy manager, second-in-command",
+    note: "assistant (adj.) 副的、助理的；不可與 assistant (n.) 助理混淆",
+    example: { en: "The assistant manager was in charge of coordinating the event.", zh: "副理負責協調活動，做得非常出色。" },
+    extraExample: { en: "She was promoted from assistant manager to regional director.", zh: "她從副理晉升為區域總監。" } },
+  { en: "colleague", pos: "n.", zh: "同事", synonyms: "associate, coworker, peer",
+    note: "三個近義詞：colleague（較正式）/ coworker（口語）/ associate（商業用語）",
+    example: { en: "I have a meeting with a few of my colleagues this afternoon to discuss our progress.", zh: "今天下午我有一個會議，與幾位同事討論我們的進展。" },
+    extraExample: { en: "She sent a thank-you note to her colleagues before retiring.", zh: "她在退休前向同事發了感謝信。" } },
+  { en: "departmental", pos: "adj.", zh: "部門的", synonyms: "divisional, sectional",
+    note: "名詞：department；常見搭配：departmental meeting / budget / approval",
+    example: { en: "Departmental meetings are usually held on the first Tuesday of each month.", zh: "部門會議通常在每月的第一個星期二舉行。" },
+    extraExample: { en: "The departmental budget was cut by 15% this year.", zh: "今年部門預算削減了15%。" } },
+  { en: "executive", pos: "n. / adj.", zh: "（n.）主管；高層幹部 / （adj.）行政的", synonyms: "senior manager, director, officer",
+    note: "常見職稱：CEO = Chief Executive Officer；executive decision = 高層決策",
+    example: { en: "The executive team is responsible for making important decisions that affect the company's future.", zh: "高級管理團隊負責做出影響公司未來的重要決策。" },
+    extraExample: { en: "She was appointed as the new executive director of the foundation.", zh: "她被任命為基金會的新執行董事。" } },
+  { en: "interdepartmental", pos: "adj.", zh: "跨部門的", synonyms: "cross-departmental, cross-functional",
+    note: "前綴 inter- = 在...之間；cf. international, interpersonal",
+    example: { en: "For the success of this project, we need interdepartmental collaboration.", zh: "為了這個專案的成功，我們需要跨部門的合作。" },
+    extraExample: { en: "The interdepartmental committee met to resolve the staffing dispute.", zh: "跨部門委員會開會解決人員調配問題。" } },
+  { en: "subordinate", pos: "n. / adj.", zh: "（n.）下屬 / （adj.）從屬的", synonyms: "↔ supervisor / superior（上司）",
+    note: "反義：supervisor（直屬主管）/ superior（上司）；subordinate clause（文法）= 從屬子句",
+    example: { en: "My subordinate just submitted their report, and it looks like they did a great job.", zh: "我的下屬剛提交了報告，看起來做得很好。" },
+    extraExample: { en: "A good leader treats subordinates with respect and fairness.", zh: "好的領導者以尊重和公平對待下屬。" } },
+];
+
+const themeVocab2 = [
+  { en: "board of directors", pos: "n. phr.", zh: "董事會", synonyms: "board, governing board",
+    note: "縮寫 BOD；常見搭配：board meeting 董事會議、board member 董事",
+    example: { en: "The board of directors recommended no dividend to shareholders for 2024.", zh: "董事會建議2024年不派發股息給股東。" },
+    extraExample: { en: "The board of directors voted to approve the merger.", zh: "董事會投票批准了合併案。" } },
+  { en: "branch", pos: "n.", zh: "分行；分店；分支機構", synonyms: "outlet, office, subsidiary",
+    note: "bank branch = 銀行分行；branch office = 分公司；branch out = 擴展業務",
+    example: { en: "Many notable pizzerias have branches elsewhere in the city.", zh: "許多著名的披薩店在城市其他地方都有分店。" },
+    extraExample: { en: "The bank plans to open 10 new branches in rural areas.", zh: "該銀行計劃在農村地區開設10家新分行。" } },
+  { en: "corporate", pos: "adj.", zh: "企業的；公司的", synonyms: "company-wide, organizational, business",
+    note: "名詞：corporation；常見搭配：corporate culture / strategy / headquarters",
+    example: { en: "The corporate training program provides employees with opportunities to develop new skills.", zh: "企業培訓計劃為員工提供開發新技能的機會。" },
+    extraExample: { en: "Corporate social responsibility is increasingly important to investors.", zh: "企業社會責任對投資者越來越重要。" } },
+  { en: "corporation", pos: "n.", zh: "大型公司；股份有限公司", synonyms: "enterprise, legal entity, firm, syndicate",
+    note: "Inc. = Incorporated（美式）；Ltd. = Limited（英式）；都表示有限公司",
+    example: { en: "The corporation's annual report showed a decline in profits.", zh: "公司的年度報告顯示利潤有所下降。" },
+    extraExample: { en: "She founded a corporation that now employs over 500 people.", zh: "她創立了一家現有500多名員工的公司。" } },
+  { en: "headquarter (v.) / headquarters (n.)", pos: "v. / n.", zh: "（v.）設置總部 / （n.）總部", synonyms: "home office, main office, HQ",
+    note: "重要句型：be headquartered in + 地點（被動）→ The airline is headquartered in Seattle.",
+    example: { en: "The airline is headquartered in Seattle.", zh: "這家航空公司總部位在西雅圖。" },
+    extraExample: { en: "The company's global headquarters are located in New York.", zh: "公司的全球總部位於紐約。" } },
+  { en: "incorporation", pos: "n.", zh: "成立企業；融合；結合", synonyms: "establishment, founding, integration",
+    note: "動詞：incorporate (v.) 合併、成立；The company was incorporated in 1990.",
+    example: { en: "The museum announced events to commemorate its incorporation in April 1869.", zh: "博物館宣布一系列活動，紀念其於1869年4月成立。" },
+    extraExample: { en: "The incorporation of new technology improved efficiency significantly.", zh: "新技術的融入顯著提高了效率。" } },
+  { en: "shareholder", pos: "n.", zh: "股東", synonyms: "stockholder, investor, equity holder",
+    note: "shareholders' meeting = 股東大會；shares outstanding = 流通股；dividend = 股息",
+    example: { en: "The corporation is calling a shareholders' meeting.", zh: "該企業要召開股東大會了。" },
+    extraExample: { en: "Shareholders voted against the proposed executive pay increase.", zh: "股東投票反對擬議的高管薪酬增加。" } },
+  { en: "sub-office", pos: "n.", zh: "分公司", synonyms: "branch office, satellite office",
+    note: "sub- 前綴 = 下、副、分；cf. subdivision / subcontract / subordinate",
+    example: { en: "The sub-office in Shanghai reported a significant increase in sales this quarter.", zh: "上海的分公司報告本季度銷售額顯著增加。" },
+    extraExample: { en: "The company opened a sub-office to handle Asia-Pacific operations.", zh: "公司開設了一個分公司來處理亞太業務。" } },
+  { en: "company-wide", pos: "adj.", zh: "全公司的；從上到下的", synonyms: "organization-wide, firm-wide, across the board",
+    note: "常見搭配：company-wide policy / initiative / announcement / restructuring",
+    example: { en: "Company-wide risk-management systems will be set up.", zh: "全公司的風險管理系統將被建立。" },
+    extraExample: { en: "The CEO announced a company-wide salary freeze.", zh: "執行長宣布全公司凍薪。" } },
+  { en: "incorporate", pos: "v.", zh: "合併；融合；成立（公司）", synonyms: "merge, integrate, consolidate, combine",
+    note: "三種用法：(1)融入 incorporate A into B (2)成立公司 be incorporated in 年份 (3)包含 incorporate features",
+    example: { en: "This design incorporates the best safety concepts of our earlier models.", zh: "這項設計結合了我們早期型號最棒的安全概念。" },
+    extraExample: { en: "The new curriculum incorporates feedback from students and teachers.", zh: "新課程融入了學生和老師的反饋意見。" } },
+  { en: "managerial", pos: "adj.", zh: "管理的；經營上的", synonyms: "supervisory, administrative, executive",
+    note: "managerial skills = 管理技能；managerial position = 管理職位；名詞：manager",
+    example: { en: "The CEO's vision and excellent managerial skills contributed to the growth of this group.", zh: "執行長的真知灼見和卓越的管理技能帶領集團創高峰。" },
+    extraExample: { en: "She attended a workshop to sharpen her managerial skills.", zh: "她參加了一個研討會以提升管理技能。" } },
+  { en: "personnel", pos: "n.", zh: "人事部門；全體員工（不可數）", synonyms: "staff, employees, workforce, human resources",
+    note: "注意：personnel 是不可數名詞（不加 -s）；personnel department = 人事部 = HR department",
+    example: { en: "The personnel department announced that a new director is hired to replace Tom.", zh: "人事部公告他們聘請了新的協理來接替 Tom。" },
+    extraExample: { en: "All personnel must complete the safety training by Friday.", zh: "所有員工必須在週五前完成安全培訓。" } },
+  { en: "restructure", pos: "v.", zh: "重建；改組；重整", synonyms: "reorganize, overhaul, reshape",
+    note: "重要搭配：restructuring charges = 改組成本（財報常見）；corporate restructuring = 企業改組",
+    example: { en: "The company detailed a restructuring initiative designed to reduce costs.", zh: "該公司詳細介紹了一項旨在降低成本的重組計劃。" },
+    extraExample: { en: "The new CEO announced plans to restructure the sales division.", zh: "新執行長宣布計劃對銷售部門進行重組。" } },
+  { en: "stakeholder", pos: "n.", zh: "利害關係人；相關方", synonyms: "interested party, shareholder (narrower), participant",
+    note: "比 shareholder（股東）範圍更廣，包含員工、顧客、政府、社區等所有相關方",
+    example: { en: "The company held a forum to address concerns from all stakeholders.", zh: "公司舉辦論壇以解決所有利害關係人的疑慮。" },
+    extraExample: { en: "Stakeholder engagement is key to project success.", zh: "利害關係人的參與是專案成功的關鍵。" } },
+  { en: "subsidiary", pos: "n.", zh: "子公司；附屬公司", synonyms: "affiliate, division ↔ parent company（母公司）",
+    note: "反義：parent company / parent entity = 母公司；全資子公司 = wholly-owned subsidiary",
+    example: { en: "Meta is the parent organization of Facebook, Instagram, and WhatsApp among other subsidiaries.", zh: "Meta 是 Facebook、Instagram 和 WhatsApp 以及其他子公司的母公司。" },
+    extraExample: { en: "The subsidiary operates independently but reports to the parent company.", zh: "子公司獨立運作，但向母公司報告。" } },
+  { en: "upper management", pos: "n. phr.", zh: "高層管理人員；高階主管", synonyms: "senior management, top management, C-suite",
+    note: "相關詞：middle management = 中階主管；C-suite = CEO/CFO/COO 等最高層",
+    example: { en: "The issue needs to be escalated to upper management or HR.", zh: "這個問題需要上報給高層管理人員或人力資源部門。" },
+    extraExample: { en: "Upper management approved the expansion plan unanimously.", zh: "高層管理人員一致批准了擴張計劃。" } },
+];
+
+const vocabPracticeData = [
+  { num:1, answer:"B", stem:"When readers renew a one-year subscription to Sports World Magazine, they ________ receive a 30% discount off the regular retail price.", options:["routinely","customarily","gradually","repeatedly"],
+    explanation:"正解 (B) customarily（按慣例地）= 依照習慣或慣例。(A) routinely 例行地；(C) gradually 逐漸地；(D) repeatedly 反覆地，語意不符。",
+    optionNotes:[
+      {word:"routinely",zh:"例行地；慣例性地",syn:"regularly, habitually",ex:"The machines are routinely inspected every six months."},
+      {word:"customarily",zh:"依照慣例地；習慣上地",syn:"traditionally, conventionally, as a rule",ex:"Employees are customarily given a year-end bonus."},
+      {word:"gradually",zh:"逐漸地；緩慢地",syn:"slowly, progressively, incrementally",ex:"The company gradually expanded its market share."},
+      {word:"repeatedly",zh:"反覆地；多次地",syn:"again and again, over and over",ex:"She repeatedly asked for a refund but received no response."},
+    ]},
+  { num:2, answer:"D", stem:"The lawyers at Davidson and Associates have ________ the original contract in order to meet recent changes in national broadcasting laws.", options:["rewarded","advanced","enclosed","modified"],
+    explanation:"正解 (D) modified（修改）= 對合約進行修改以符合法規。(A) rewarded 獎勵；(B) advanced 推進；(C) enclosed 附上，均不符。",
+    optionNotes:[
+      {word:"reward",zh:"獎勵；報酬",syn:"compensate, award, recognize",ex:"Employees are rewarded for outstanding performance."},
+      {word:"advance",zh:"（v.）推進；預付 / （n.）預付款",syn:"progress, promote, prepay",ex:"The project advanced ahead of schedule."},
+      {word:"enclose",zh:"附上；圍住；隨函附寄",syn:"include, attach, surround",ex:"Please find the invoice enclosed with this letter."},
+      {word:"modify",zh:"修改；調整；更動",syn:"alter, revise, adjust, amend",ex:"The engineer modified the design to improve safety."},
+    ]},
+  { num:3, answer:"D", stem:"In the fund-raising meeting held this morning, there were only three attendees ________.", options:["subsequently","consecutively","afterward","altogether"],
+    explanation:"正解 (D) altogether（總計；共）= 「總共只有三位出席者」。(A) subsequently 隨後；(B) consecutively 連續地；(C) afterward 之後，均不符。",
+    optionNotes:[
+      {word:"subsequently",zh:"隨後；後來；接著",syn:"afterward, later, consequently",ex:"He resigned and subsequently started his own business."},
+      {word:"consecutively",zh:"連續地；依序地",syn:"in a row, successively, back to back",ex:"She won the award consecutively for three years."},
+      {word:"afterward",zh:"之後；隨後",syn:"later, thereafter, subsequently",ex:"We had dinner and went for a walk afterward."},
+      {word:"altogether",zh:"總計；完全地；總共",syn:"in total, in all, all told",ex:"There were 50 participants altogether at the seminar."},
+    ]},
+  { num:4, answer:"B", stem:"While the president was on the business trip to the Middle East, political disturbances occurred, so he had to change his plans ________.", options:["shortly","accordingly","uniformly","enthusiastically"],
+    explanation:"正解 (B) accordingly（因此；相應地）= 因為發生了政治動盪，所以「相應地」更改計劃。(A) shortly 不久後；(C) uniformly 一致地；(D) enthusiastically 熱情地。",
+    optionNotes:[
+      {word:"shortly",zh:"不久；很快；簡短地",syn:"soon, before long, in a moment",ex:"The meeting will begin shortly."},
+      {word:"accordingly",zh:"因此；相應地；照著",syn:"therefore, consequently, as a result",ex:"The budget was cut, and staff adjusted their spending accordingly."},
+      {word:"uniformly",zh:"一致地；均勻地",syn:"consistently, evenly, equally",ex:"The paint was applied uniformly across the wall."},
+      {word:"enthusiastically",zh:"熱情地；充滿熱忱地",syn:"eagerly, passionately, keenly",ex:"The audience applauded enthusiastically."},
+    ]},
+  { num:5, answer:"D", stem:"The seven-day paid vacation given to all employees with a work record of five years will be increased to ten days ________ from January 1 next year.", options:["resulting","efficient","originating","effective"],
+    explanation:"正解 (D) effective（生效的）= effective from + 日期，多益高頻句型，意為「自...起生效」。(A) resulting 結果的；(B) efficient 有效率的；(C) originating 起源的。",
+    optionNotes:[
+      {word:"resulting",zh:"（adj.）由此產生的",syn:"consequent, ensuing",ex:"The accident and the resulting damage cost millions."},
+      {word:"efficient",zh:"有效率的；高效的",syn:"effective, productive, streamlined",ex:"The new system is far more efficient than the old one."},
+      {word:"originating",zh:"起源的；發起的",syn:"stemming, arising, derived",ex:"The tradition originating in Asia is now global."},
+      {word:"effective",zh:"（adj.）生效的；有效的",syn:"in effect, operative, valid",ex:"Effective January 1, all staff must use the new system."},
+    ]},
+  { num:6, answer:"C", stem:"The main theme of the upcoming meeting will be particularly ________ to those involved in the merger of the two companies.", options:["subject","entitled","relevant","dedicated"],
+    explanation:"正解 (C) relevant（相關的）= relevant to sb/sth，是多益超高頻搭配。(A) subject to = 受...約束；(B) entitled to = 有權得到；(D) dedicated to = 致力於。",
+    optionNotes:[
+      {word:"subject",zh:"（adj.）受...支配的（搭配 to）",syn:"liable to, prone to",ex:"Prices are subject to change without notice."},
+      {word:"entitled",zh:"（adj.）有資格的（搭配 to）",syn:"qualified for, eligible for",ex:"Full-time employees are entitled to health insurance."},
+      {word:"relevant",zh:"（adj.）相關的；切題的（搭配 to）",syn:"pertinent, applicable, related",ex:"Please submit only information relevant to the position."},
+      {word:"dedicated",zh:"（adj.）致力的；專用的（搭配 to）",syn:"committed to, devoted to",ex:"She is dedicated to improving workplace safety."},
+    ]},
+  { num:7, answer:"D", stem:"If your current password is no longer ________, please contact the IT department.", options:["connected","varied","durable","valid"],
+    explanation:"正解 (D) valid（有效的）= 密碼「有效」是固定說法；invalid password = 無效密碼。(A) connected 連線的；(B) varied 多樣的；(C) durable 耐用的，均不符。",
+    optionNotes:[
+      {word:"connected",zh:"連接的；有關聯的",syn:"linked, networked, related",ex:"All devices are connected to the company network."},
+      {word:"varied",zh:"多樣的；各式各樣的",syn:"diverse, assorted, different",ex:"The menu offers a varied selection of dishes."},
+      {word:"durable",zh:"耐用的；持久的",syn:"long-lasting, sturdy, resilient",ex:"This material is lightweight yet durable."},
+      {word:"valid",zh:"有效的；合法的；站得住腳的",syn:"legitimate, authorized, acceptable",ex:"Your ticket is valid for 30 days from the date of purchase."},
+    ]},
+  { num:8, answer:"D", stem:"In order for the company to fulfill its objective of expanding overseas, it must first ________ funds through the sale of underperforming divisions.", options:["invest","deposit","reimburse","raise"],
+    explanation:"正解 (D) raise（籌集；募集）= raise funds = 募資，商業英文核心搭配。(A) invest 投資（錢是出去的）；(B) deposit 存入；(C) reimburse 報銷，均不符。",
+    optionNotes:[
+      {word:"invest",zh:"投資；投入",syn:"put money into, fund, finance",ex:"The firm decided to invest in renewable energy."},
+      {word:"deposit",zh:"存款；押金；存入",syn:"put in, pay in, place a deposit",ex:"Please deposit the check before 3 P.M."},
+      {word:"reimburse",zh:"報銷；償還；補償",syn:"refund, compensate, pay back",ex:"Employees will be reimbursed for travel expenses."},
+      {word:"raise",zh:"籌集；提高；提出",syn:"collect, gather, generate (funds)",ex:"The charity raised over $1 million in a single event."},
+    ]},
+  { num:9, answer:"B", stem:"The company has an aggressive plan to expand its business across the country next year, so it has decided to raise funds by ________ stock.", options:["investing","issuing","achieving","renewing"],
+    explanation:"正解 (B) issuing（發行）= issue stock = 發行股票，金融英文核心搭配。(A) investing stock 語意矛盾；(C) achieving 達成；(D) renewing 更新，均不符。",
+    optionNotes:[
+      {word:"invest",zh:"投資",syn:"put capital into, fund",ex:"They invested heavily in technology upgrades."},
+      {word:"issue",zh:"發行；發出；簽發",syn:"release, publish, distribute, put out",ex:"The government issued new guidelines for food safety."},
+      {word:"achieve",zh:"達成；實現",syn:"accomplish, attain, reach",ex:"The team achieved record sales last quarter."},
+      {word:"renew",zh:"更新；續約；重新開始",syn:"extend, refresh, reinstate",ex:"Please remember to renew your membership before it expires."},
+    ]},
+  { num:10, answer:"D", stem:"An official announcement of the acquisition is expected at Westman Industries' ________ shareholders meeting.", options:["frequent","limited","preferable","upcoming"],
+    explanation:"正解 (D) upcoming（即將到來的）= upcoming meeting = 即將舉行的會議，多益超高頻詞。(A) frequent 頻繁的；(B) limited 有限的；(C) preferable 更好的。",
+    optionNotes:[
+      {word:"frequent",zh:"頻繁的；經常的",syn:"regular, repeated, recurrent",ex:"He is a frequent traveler who visits clients weekly."},
+      {word:"limited",zh:"有限的；限制的",syn:"restricted, finite, scarce",ex:"Tickets are limited, so purchase early."},
+      {word:"preferable",zh:"更好的；更可取的（搭配 to）",syn:"better, more desirable, preferred",ex:"A phone call is preferable to an email in urgent cases."},
+      {word:"upcoming",zh:"即將到來的；即將舉行的",syn:"forthcoming, approaching, imminent",ex:"Please mark your calendar for the upcoming product launch."},
+    ]},
+  { num:11, answer:"D", stem:"The company lawyers had to go through the ________ process of getting approval from various bureaucratic offices.", options:["numerous","outstanding","dominant","lengthy"],
+    explanation:"正解 (D) lengthy（漫長的；冗長的）= 描述「繁瑣的審批流程」需要很長時間。(A) numerous 許多的；(B) outstanding 出色的/未付清的；(C) dominant 主導的，均不符。",
+    optionNotes:[
+      {word:"numerous",zh:"許多的；無數的",syn:"many, a great number of, countless",ex:"Numerous complaints were filed against the contractor."},
+      {word:"outstanding",zh:"出色的；傑出的 / 未解決的；未付清的",syn:"excellent / pending, unresolved",ex:"She has an outstanding balance of $500. / He is an outstanding performer."},
+      {word:"dominant",zh:"主導的；占優勢的",syn:"leading, prevailing, predominant",ex:"The company has a dominant position in the market."},
+      {word:"lengthy",zh:"漫長的；冗長的；很長的",syn:"long, prolonged, extended, protracted",ex:"The contract negotiation was a lengthy process."},
+    ]},
+  { num:12, answer:"B", stem:"________ tourists can enter the country more conveniently, ATS will issue a special card to those who apply and pass a security screening.", options:["As far as","So that","Moreover","Now that"],
+    explanation:"正解 (B) So that（為了；以便）= 表示目的的連接詞。句意：「為了讓遊客能更便利入境，ATS將發行特殊卡片...」。(A) As far as 就...而言；(C) Moreover 副詞，不引導子句；(D) Now that 既然（表原因）。",
+    optionNotes:[
+      {word:"As far as",zh:"就...而言；就...所知",syn:"to the extent that, as much as",ex:"As far as I know, the project is still on schedule."},
+      {word:"So that",zh:"為了（表目的）；因此（表結果）",syn:"in order that, so as to",ex:"She studied hard so that she could pass the exam."},
+      {word:"Moreover",zh:"此外；而且（副詞，不可引導子句）",syn:"furthermore, in addition, besides",ex:"The price is low. Moreover, the quality is excellent."},
+      {word:"Now that",zh:"既然；由於（表原因，常指已發生的事）",syn:"since, given that, seeing that",ex:"Now that the rain has stopped, we can go outside."},
+    ]},
+];
+
+const part5Data = [
+  { num:1, answer:"D", stem:"The staff at Pugh Hotel are pleased that you ________ our banquet facilities for your function.", options:["selecting","to select","are selected","have selected"],
+    explanation:"正解 (D) have selected（現在完成式）。that 引導的名詞子句需要完整動詞。主詞 you 已確認選擇了宴會廳（已完成的動作），故用現在完成式。(A) selecting 缺助動詞；(B) to select 是不定詞；(C) are selected 是被動，但語意上應是「你們選擇了」而非「你們被選擇」。",
+    vocabNotes:[
+      {word:"banquet facilities",note:"宴會設施；banquet (n.) 宴會、宴席，常見搭配：banquet hall 宴會廳",ex:"The hotel offers state-of-the-art banquet facilities for up to 500 guests."},
+      {word:"function (n.)",note:"（此處）宴席；社交場合；活動；（另義）功能",ex:"The charity function raised over $50,000."},
+    ]},
+  { num:2, answer:"B", stem:"________ you order the supplies by phone, they will be delivered the next business day.", options:["As well as","If","Also","Either"],
+    explanation:"正解 (B) If（如果）。此句為條件句，if 引導條件子句：「如果你用電話訂購，隔個工作天就會送達」。(A) As well as 意為「以及」；(C) Also 是副詞；(D) Either 用於否定句，均不符。",
+    vocabNotes:[
+      {word:"supplies (n.)",note:"物資；補給品；用品 → office supplies 辦公用品 / medical supplies 醫療用品",ex:"We need to order more office supplies before the end of the month."},
+      {word:"business day",note:"工作日（不含週末與假日）；常見於合約與服務說明",ex:"Your order will be processed within 3 business days."},
+    ]},
+  { num:3, answer:"C", stem:"The Kyville Foundation hosts recruiting events twice a year to attract new ________.", options:["voluntary","voluntarily","volunteers","volunteered"],
+    explanation:"正解 (C) volunteers（志工；自願者）名詞。空格填入的是 attract 的受詞，需要名詞。(A) voluntary 形容詞；(B) voluntarily 副詞；(D) volunteered 動詞過去式，均不能作受詞名詞。",
+    vocabNotes:[
+      {word:"volunteer (n./v.)",note:"(n.) 志工、自願者；(v.) 自願做某事 volunteer to do sth",ex:"She volunteered to organize the annual charity event."},
+      {word:"voluntary (adj.)",note:"自願的；義務的（非強制）→ voluntary work = 義工工作",ex:"Participation in the survey is completely voluntary."},
+    ]},
+  { num:4, answer:"D", stem:"Mr. Cheong ________ his twentieth anniversary with Nustar, Inc., this week.", options:["crossed","developed","performed","celebrated"],
+    explanation:"正解 (D) celebrated（慶祝）。celebrate an anniversary = 慶祝週年紀念，是固定搭配。(A) crossed 越過；(B) developed 發展；(C) performed 表演/執行，均不與 anniversary 搭配。",
+    vocabNotes:[
+      {word:"celebrate (v.)",note:"慶祝；celebrate + 事件（anniversary / birthday / achievement）",ex:"The company celebrated its 50th anniversary with a gala dinner."},
+      {word:"anniversary (n.)",note:"週年紀念；work anniversary = 工作週年；wedding anniversary = 結婚週年",ex:"Today marks the 10th anniversary of the company's founding."},
+    ]},
+  { num:5, answer:"B", stem:"Food may be purchased at the convention center, and ________ beverages are offered free of charge.", options:["assorting","assorted","assortment","assort"],
+    explanation:"正解 (B) assorted（各式各樣的）形容詞。空格修飾名詞 beverages，需形容詞。assorted beverages = 各式飲料。(A) assorting 現在分詞；(C) assortment 名詞；(D) assort 動詞原形。",
+    vocabNotes:[
+      {word:"assorted (adj.)",note:"各式各樣的；什錦的 → assorted chocolates / assorted flavors",ex:"The gift basket contained assorted snacks and beverages."},
+      {word:"free of charge",note:"免費；= at no cost / complimentary",ex:"Delivery is free of charge for orders over $100."},
+    ]},
+  { num:6, answer:"B", stem:"Read the operations guide for our tools, as ________ have a double safety lock to prevent accidents.", options:["such","many","another","which"],
+    explanation:"正解 (B) many（許多）。句意：「閱讀操作指南，因為許多工具都有雙重安全鎖」。many 修飾複數名詞（tools）。(A) such = 如此；(C) another + 單數名詞；(D) which 是關係代名詞，不能在此單獨使用。",
+    vocabNotes:[
+      {word:"operations guide",note:"操作指南；= user manual / instruction manual",ex:"Please refer to the operations guide before using the machine."},
+      {word:"double safety lock",note:"雙重安全鎖；prevent accidents = 防止意外",ex:"All power tools come equipped with a double safety lock."},
+    ]},
+  { num:7, answer:"D", stem:"The owner of Joel's Seafood Spot is committed to serving only ________ caught fish in his restaurant.", options:["sustain","sustaining","to sustain","sustainably"],
+    explanation:"正解 (D) sustainably（永續地）副詞。空格修飾動詞 caught，需副詞。sustainably caught fish = 以永續方式捕撈的魚（環保術語）。(A) sustain 動詞；(B) sustaining 現在分詞；(C) to sustain 不定詞，均不能修飾動詞 caught。",
+    vocabNotes:[
+      {word:"sustainably (adv.)",note:"永續地；以可持續的方式；形容詞：sustainable",ex:"The company is committed to sourcing materials sustainably."},
+      {word:"be committed to + V-ing",note:"致力於（搭配動名詞，不是不定詞）",ex:"We are committed to providing excellent customer service."},
+    ]},
+];
+
+const part6Data = [
+  { num:8, answer:"B", stem:"Is your computer running more ________ than usual?", options:["slow","slowly","slows","slowing"],
+    explanation:"正解 (B) slowly（緩慢地）副詞。running（運行）是動作動詞，需要副詞修飾方式。more slowly = 更慢地（比較級）。(A) slow 是形容詞；(C)(D) slows/slowing 是動詞形式。",
+    vocabNotes:[
+      {word:"slowly (adv.)",note:"緩慢地；比較級：more slowly；最高級：most slowly",ex:"The system responds more slowly when multiple apps are open."},
+      {word:"slow (adj. / v.)",note:"(adj.) 慢的；(v.) slow down = 減速、放慢",ex:"Traffic slowed down due to the accident on the highway."},
+    ]},
+  { num:9, answer:"C", stem:"選擇最適合插入的句子", options:["Are you planning a vacation?","Do you want a bigger movie selection?","Would you like to clean your hard drive?","Have you received a discount coupon?"],
+    explanation:"正解 (C) Would you like to clean your hard drive?（您想清理硬碟嗎？）插入句題需符合廣告語境（電腦維修服務）。前句提到安裝應用程式和升級作業系統，後句提到「電腦維護問題」，(C) 清理硬碟屬於常見維護服務，語意最連貫。其他三個選項與電腦維修無關。",
+    vocabNotes:[
+      {word:"hard drive",note:"硬碟；= HDD (hard disk drive)；SSD = 固態硬碟",ex:"She backed up all her files before cleaning the hard drive."},
+      {word:"maintenance issue",note:"維護問題；maintenance (n.) 維護、保養 → maintenance fee 保養費",ex:"The technician resolved the maintenance issue in under an hour."},
+    ]},
+  { num:10, answer:"D", stem:"Our team of trained experts will perform a complimentary check... and ________ the best course of action.", options:["demand","request","retain","recommend"],
+    explanation:"正解 (D) recommend（建議；推薦）。and 連接兩個動詞：perform a check AND recommend the best course of action。(A) demand 強烈要求（語氣太強）；(B) request 請求（主詞應是顧客）；(C) retain 保留，語意不符。",
+    vocabNotes:[
+      {word:"recommend (v.)",note:"建議；推薦 → recommend + N / recommend that S (should) V",ex:"The doctor recommended that she get more rest."},
+      {word:"complimentary (adj.)",note:"免費的；贈送的（≠ complementary 互補的）",ex:"All guests receive a complimentary breakfast."},
+      {word:"course of action",note:"行動方案；best course of action = 最佳處理方案",ex:"We need to determine the best course of action immediately."},
+    ]},
+  { num:11, answer:"A", stem:"________ us a call today at 555-0165.", options:["Give","You gave","To give","You should have given"],
+    explanation:"正解 (A) Give（祈使句）。廣告結尾呼籲行動（call to action），使用祈使句（動詞原形開頭）= Give us a call today！(B)(D) 是陳述句；(C) To give 是不定詞片語，無法單獨構成句子。",
+    vocabNotes:[
+      {word:"Give sb a call",note:"打電話給某人 = call sb / phone sb；口語常用",ex:"Give me a call when you arrive at the airport."},
+      {word:"祈使句結構",note:"動詞原形開頭，省略主詞 You → 用於命令、邀請、建議、廣告呼籲",ex:"Visit our website today! / Don't hesitate to contact us."},
+    ]},
+];
+
+// ── RENDER ────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const pw = document.getElementById('phrase-words');
+  phraseData.forEach(w => makeWordCard(w, pw));
+
+  const t1 = document.getElementById('theme1-words');
+  themeVocab1.forEach(w => makeWordCard(w, t1));
+
+  const t2 = document.getElementById('theme2-words');
+  themeVocab2.forEach(w => makeWordCard(w, t2));
+
+  const vp = document.getElementById('vocab-practice-questions');
+  vocabPracticeData.forEach(q => makeQuizCard(q, vp, true));
+
+  const p5 = document.getElementById('part5-questions');
+  part5Data.forEach(q => makeQuizCard(q, p5, false));
+
+  const p6 = document.getElementById('part6-questions');
+  part6Data.forEach(q => makeQuizCard(q, p6, false));
+});
+</script>
+</body>
+</html>
