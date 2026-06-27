@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 單字片語 Checklist</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#F7F9FC;font-family:-apple-system,"Segoe UI",system-ui,sans-serif;padding-bottom:40px}
+.header{background:#1A3C6E;color:#fff;padding:18px 20px 16px;position:sticky;top:0;z-index:100}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.header-title{font-size:18px;font-weight:900}
+.header-sub{font-size:11px;opacity:.7}
+.progress-bar-wrap{background:rgba(255,255,255,.2);border-radius:20px;height:8px;overflow:hidden}
+.progress-bar{background:#E8501A;height:8px;border-radius:20px;transition:width .3s}
+.progress-text{font-size:11px;opacity:.8;margin-top:4px;text-align:right}
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding:12px 16px 0;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-btn{background:#fff;border:1.5px solid #D8E2F0;color:#6B7A99;border-radius:20px;padding:5px 12px;cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap;transition:all .15s}
+.filter-btn.active{background:#1A3C6E;border-color:#1A3C6E;color:#fff}
+.filter-btn.done-filter{background:#1A7A4A;border-color:#1A7A4A;color:#fff}
+.content{padding:12px 16px;max-width:680px;margin:0 auto}
+.section-header{display:flex;align-items:center;gap:8px;margin:18px 0 8px}
+.section-label{background:#1A3C6E;color:#fff;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:800;letter-spacing:.5px}
+.section-title{font-size:14px;font-weight:800;color:#1A3C6E}
+.section-count{font-size:11px;color:#6B7A99;margin-left:auto}
+.word-item{background:#fff;border:1.5px solid #D8E2F0;border-radius:10px;margin-bottom:8px;overflow:hidden;transition:border-color .15s}
+.word-item.checked{border-color:#1A7A4A;background:#F0FAF4}
+.word-item.checked .word-en{color:#1A7A4A}
+.word-row{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.checkbox{width:22px;height:22px;border-radius:6px;border:2px solid #D8E2F0;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:#fff}
+.word-item.checked .checkbox{background:#1A7A4A;border-color:#1A7A4A}
+.check-icon{color:#fff;font-size:13px;display:none}
+.word-item.checked .check-icon{display:block}
+.word-main{flex:1;min-width:0}
+.word-en{font-weight:800;font-size:14px;color:#1A3C6E;line-height:1.3}
+.word-pos{display:inline-block;background:#EAF0FB;color:#1A3C6E;border-radius:4px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:5px;vertical-align:middle}
+.word-zh{font-size:13px;color:#E8501A;font-weight:600;margin-top:1px;display:none}
+.word-item.open .word-zh{display:block}
+.expand-btn{color:#6B7A99;font-size:12px;flex-shrink:0;padding:4px}
+.word-detail{display:none;padding:0 14px 12px 46px;font-size:13px;border-top:1px solid #EAF0FB}
+.word-item.open .word-detail{display:block}
+.detail-note{background:#EAF0FB;border-radius:6px;padding:6px 10px;color:#1A3C6E;margin-bottom:6px;line-height:1.5}
+.detail-syn{color:#6B7A99;margin-bottom:4px}
+.detail-syn span{color:#1A7A4A;font-weight:600}
+.detail-ex{font-style:italic;color:#333;margin-bottom:2px;line-height:1.5}
+.detail-ex-zh{color:#6B7A99;margin-bottom:6px}
+.reset-btn{background:#fff;border:1.5px solid #D8E2F0;color:#6B7A99;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.dialog-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:center;justify-content:center}
+.dialog-overlay.show{display:flex}
+.dialog-box{background:#fff;border-radius:14px;padding:24px 20px;max-width:280px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.dialog-title{font-size:15px;font-weight:800;color:#1A3C6E;margin-bottom:8px}
+.dialog-msg{font-size:13px;color:#555;margin-bottom:20px;line-height:1.5}
+.dialog-btns{display:flex;gap:10px}
+.dialog-btn{flex:1;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:700;cursor:pointer}
+.dialog-btn-cancel{background:#F5F7FA;color:#6B7A99}
+.dialog-btn-confirm{background:#E8501A;color:#fff}
+.word-item.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">Week 1 單字片語 Checklist</div>
+      <div class="header-sub">共 <span id="total-count">0</span> 個單字／片語</div>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">重置</button>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="progress-text">已掌握 <span id="done-count">0</span> / <span id="total-count2">0</span></div>
+</div>
+
+<div class="dialog-overlay" id="reset-dialog">
+  <div class="dialog-box">
+    <div class="dialog-title">重置進度</div>
+    <div class="dialog-msg">確定要清除所有已勾選的進度嗎？<br>此動作無法復原。</div>
+    <div class="dialog-btns">
+      <button class="dialog-btn dialog-btn-cancel" onclick="closeDialog()">取消</button>
+      <button class="dialog-btn dialog-btn-confirm" onclick="confirmReset()">確定重置</button>
+    </div>
+  </div>
+</div>
+
+<div class="filter-row">
+  <button class="filter-btn active" onclick="setFilter('all')">全部</button>
+  <button class="filter-btn" onclick="setFilter('未學')">未學</button>
+  <button class="filter-btn done-filter" onclick="setFilter('已掌握')">已掌握</button>
+  <button class="filter-btn" onclick="setFilter('sec0')">重要單字片語</button>
+  <button class="filter-btn" onclick="setFilter('sec1')">高分主題字彙①</button>
+  <button class="filter-btn" onclick="setFilter('sec2')">高分主題字彙②</button>
+  <button class="filter-btn" onclick="setFilter('sec3')">高分字彙練習</button>
+  <button class="filter-btn" onclick="setFilter('sec4')">閱讀小考字彙</button>
+</div>
+
+<div class="content" id="main-content"></div>
+
+<script>
+const sections = [
+  {
+    id: 'sec0',
+    label: 'Part 1',
+    title: '重要單字與片語',
+    words: [
+      {en:'stroll side by side',pos:'v. phr.',zh:'並肩漫步',syn:'walk together, walk alongside each other',note:'side by side = 並肩、一起；也可引申「並肩合作」',ex:'The man and the woman are strolling side by side.',exzh:'男人和女人並肩漫步。'},
+      {en:'clutter (with)',pos:'v.',zh:'使雜亂；堆滿',syn:'fill, crowd, mess up',note:'clutter (n.) 雜物、凌亂；cluttered (adj.) 雜亂的；The desk is cluttered with papers.',ex:"Don't clutter your desk with unnecessary items.",exzh:'不要讓不必要的東西把桌子弄得亂七八糟。'},
+      {en:"roll up (one's sleeves)",pos:'v. phr.',zh:'捲起袖子；準備大幹一場',syn:'fold up, turn up',note:'字面義：捲袖子；引申義：準備認真工作；It\'s time to roll up our sleeves.',ex:'The man has rolled up his shirt sleeves.',exzh:'那名男子捲起了襯衫袖子。'},
+      {en:'line up',pos:'v. phr.',zh:'排隊；排列',syn:'queue up, stand in line',note:'People have lined up to board the boat.（完成式=已排好隊）；line up = 使整齊排列',ex:'Customers lined up outside the store before it opened.',exzh:'顧客在商店開門前就在外面排隊了。'},
+      {en:'cast a shadow',pos:'v. phr.',zh:'投下陰影',syn:'shade, block the light',note:'引申義：cast a shadow over sth = 給某事蒙上陰影（帶來負面影響）',ex:'The scandal cast a shadow over the company\'s reputation.',exzh:'這樁醜聞給公司聲譽蒙上了陰影。'},
+      {en:'pile (on/up)',pos:'v.',zh:'堆疊；堆積',syn:'stack, heap',note:'pile up = 累積；piled (adj.) 堆放的；work is piling up = 工作越積越多',ex:'Work has been piling up since she went on leave.',exzh:'自從她請假以來，工作一直積壓著。'},
+      {en:'attach (to)',pos:'v.',zh:'貼附；附上',syn:'stick, fasten, affix',note:'Labels are being attached to the products.（被動進行式）；attach a file to an email = 附檔',ex:'Please attach your resume to the email.',exzh:'請將您的履歷附在電子郵件中。'},
+      {en:'utensil',pos:'n.',zh:'餐具；用具',syn:'cutlery, tool, implement',note:'eating utensils = 餐具（叉、刀、湯匙）；kitchen utensils = 廚房用具',ex:'Eating utensils have been arranged on the table.',exzh:'餐具已整齊地擺放在桌上。'},
+      {en:'garment',pos:'n.',zh:'衣物；服裝',syn:'clothing, apparel, attire',note:'較正式的衣物說法；garments for sale = 待售服裝；garment industry = 成衣業',ex:'Garments for sale are spread on the floor.',exzh:'待售的衣物鋪展在地板上。'},
+      {en:'canopy',pos:'n.',zh:'頂篷；遮篷',syn:'awning, cover, shade',note:'多益近年高頻難詞：tent → canopy（帳篷頂部遮蓋）；a canopy of leaves = 樹葉形成的遮蓋',ex:'The outdoor market stalls were protected by colorful canopies.',exzh:'戶外市場攤位由色彩繽紛的頂篷保護著。'},
+    ]
+  },
+  {
+    id: 'sec1',
+    label: '主題字彙①',
+    title: '高分主題字彙 (1)：公司部門與職稱',
+    words: [
+      {en:'administrator',pos:'n.',zh:'行政人員；管理員',syn:'manager, director, coordinator',note:'administer (v.) 管理；administration (n.) 行政/管理；school/hospital administrator',ex:'The hospital administrator approved the new budget plan.',exzh:'醫院行政人員批准了新的預算計劃。'},
+      {en:'assistant manager',pos:'n. phr.',zh:'副理',syn:'deputy manager, second-in-command',note:'assistant (adj.) 副的、助理的；assistant director/professor 均同理',ex:'She was promoted from assistant manager to regional director.',exzh:'她從副理晉升為區域總監。'},
+      {en:'colleague',pos:'n.',zh:'同事',syn:'coworker, associate, peer',note:'colleague（正式）/ coworker（口語）/ associate（商業）；三者均表同事',ex:'She sent a thank-you note to her colleagues before retiring.',exzh:'她在退休前向同事發了感謝信。'},
+      {en:'departmental',pos:'adj.',zh:'部門的',syn:'divisional, sectional',note:'departmental meeting/budget/approval = 部門會議/預算/批准',ex:'The departmental budget was cut by 15% this year.',exzh:'今年部門預算削減了15%。'},
+      {en:'executive',pos:'n./adj.',zh:'（n.）主管；高層幹部 /（adj.）行政的',syn:'senior manager, director, officer',note:'CEO = Chief Executive Officer；executive decision = 高層決策；executive suite = 高層套房',ex:'She was appointed as the new executive director of the foundation.',exzh:'她被任命為基金會的新執行董事。'},
+      {en:'interdepartmental',pos:'adj.',zh:'跨部門的',syn:'cross-departmental, cross-functional',note:'前綴 inter- = 在...之間；cf. international 國際的、interpersonal 人際的',ex:'The interdepartmental committee met to resolve the staffing dispute.',exzh:'跨部門委員會開會解決人員調配問題。'},
+      {en:'subordinate',pos:'n./adj.',zh:'（n.）下屬 /（adj.）從屬的',syn:'↔ supervisor / superior（上司）',note:'反義：supervisor 直屬主管、superior 上司；subordinate clause（文法）= 從屬子句',ex:'A good leader treats subordinates with respect and fairness.',exzh:'好的領導者以尊重和公平對待下屬。'},
+    ]
+  },
+  {
+    id: 'sec2',
+    label: '主題字彙②',
+    title: '高分主題字彙 (2)：公司結構',
+    words: [
+      {en:'board of directors',pos:'n. phr.',zh:'董事會',syn:'board, governing board',note:'縮寫 BOD；board meeting = 董事會議；board member = 董事',ex:'The board of directors voted to approve the merger.',exzh:'董事會投票批准了合併案。'},
+      {en:'branch',pos:'n.',zh:'分行；分店；分支機構',syn:'outlet, office, subsidiary',note:'bank branch = 銀行分行；branch office = 分公司；branch out = 擴展業務',ex:'The bank plans to open 10 new branches in rural areas.',exzh:'該銀行計劃在農村地區開設10家新分行。'},
+      {en:'corporate',pos:'adj.',zh:'企業的；公司的',syn:'company-wide, organizational',note:'corporate culture/strategy/headquarters = 企業文化/策略/總部；corporation (n.) 公司',ex:'Corporate social responsibility is increasingly important to investors.',exzh:'企業社會責任對投資者越來越重要。'},
+      {en:'corporation',pos:'n.',zh:'大型公司；股份有限公司',syn:'enterprise, firm',note:'Inc. = Incorporated（美式）；Ltd. = Limited（英式）；multinational corporation = 跨國公司',ex:'She founded a corporation that now employs over 500 people.',exzh:'她創立了一家現有500多名員工的公司。'},
+      {en:'headquarter (v.) / headquarters (n.)',pos:'v./n.',zh:'（v.）設置總部 /（n.）總部',syn:'home office, main office, HQ',note:'重要句型：be headquartered in + 地點；The company is headquartered in Seattle.',ex:"The company's global headquarters are located in New York.",exzh:'公司的全球總部位於紐約。'},
+      {en:'incorporation',pos:'n.',zh:'成立企業；融合；結合',syn:'establishment, founding, integration',note:'incorporate (v.) 合併、成立；The company was incorporated in 1990.',ex:'The incorporation of new technology improved efficiency significantly.',exzh:'新技術的融入顯著提高了效率。'},
+      {en:'shareholder',pos:'n.',zh:'股東',syn:'stockholder, investor',note:"shareholders' meeting = 股東大會；dividend = 股息；shares outstanding = 流通股",ex:'Shareholders voted against the proposed executive pay increase.',exzh:'股東投票反對擬議的高管薪酬增加。'},
+      {en:'sub-office',pos:'n.',zh:'分公司',syn:'branch office, satellite office',note:'sub- 前綴 = 下、副、分；cf. subdivision / subcontract / subordinate',ex:'The sub-office in Shanghai reported a significant increase in sales.',exzh:'上海的分公司報告本季度銷售額顯著增加。'},
+      {en:'company-wide',pos:'adj.',zh:'全公司的；從上到下的',syn:'organization-wide, firm-wide, across the board',note:'company-wide policy/initiative/announcement/restructuring = 全公司的政策/計劃/公告/重組',ex:'The CEO announced a company-wide salary freeze.',exzh:'執行長宣布全公司凍薪。'},
+      {en:'incorporate',pos:'v.',zh:'合併；融合；成立（公司）',syn:'merge, integrate, consolidate',note:'三種用法：(1)融入 incorporate A into B (2)成立公司 be incorporated in 年份 (3)包含',ex:'The new curriculum incorporates feedback from students and teachers.',exzh:'新課程融入了學生和老師的反饋意見。'},
+      {en:'managerial',pos:'adj.',zh:'管理的；經營上的',syn:'supervisory, administrative, executive',note:'managerial skills/position/level = 管理技能/職位/階層',ex:'She attended a workshop to sharpen her managerial skills.',exzh:'她參加了一個研討會以提升管理技能。'},
+      {en:'personnel',pos:'n.',zh:'人事部門；全體員工（不可數）',syn:'staff, employees, workforce, human resources',note:'⚠️ 不可數，不加 -s；personnel department = 人事部 = HR department',ex:'All personnel must complete the safety training by Friday.',exzh:'所有員工必須在週五前完成安全培訓。'},
+      {en:'restructure',pos:'v.',zh:'重建；改組；重整',syn:'reorganize, overhaul, reshape',note:'restructuring charges = 改組成本（財報常見）；corporate restructuring = 企業改組',ex:'The new CEO announced plans to restructure the sales division.',exzh:'新執行長宣布計劃對銷售部門進行重組。'},
+      {en:'stakeholder',pos:'n.',zh:'利害關係人；相關方',syn:'interested party, participant',note:'比 shareholder（股東）範圍更廣，包含員工、顧客、政府、社區等所有相關方',ex:'Stakeholder engagement is key to project success.',exzh:'利害關係人的參與是專案成功的關鍵。'},
+      {en:'subsidiary',pos:'n.',zh:'子公司；附屬公司',syn:'affiliate, division ↔ parent company（母公司）',note:'全資子公司 = wholly-owned subsidiary；parent company = 母公司',ex:'The subsidiary operates independently but reports to the parent company.',exzh:'子公司獨立運作，但向母公司報告。'},
+      {en:'upper management',pos:'n. phr.',zh:'高層管理人員；高階主管',syn:'senior management, top management, C-suite',note:'middle management = 中階主管；C-suite = CEO/CFO/COO 等最高層',ex:'Upper management approved the expansion plan unanimously.',exzh:'高層管理人員一致批准了擴張計劃。'},
+    ]
+  },
+  {
+    id: 'sec3',
+    label: '高分字彙練習',
+    title: '高分字彙練習 — 各選項單字',
+    words: [
+      {en:'routinely',pos:'adv.',zh:'例行地；慣例性地',syn:'regularly, habitually',note:'routine (adj./n.) → routinely (adv.)；routine check = 例行檢查',ex:'The machines are routinely inspected every six months.',exzh:'這些機器每六個月例行檢查一次。'},
+      {en:'customarily',pos:'adv.',zh:'依照慣例地；習慣上地',syn:'traditionally, conventionally, as a rule',note:'custom (n.) 習俗/慣例；customary (adj.) 慣例的；two weeks\'s notice is customary = 提前兩週通知是慣例',ex:'Employees are customarily given a year-end bonus.',exzh:'員工依慣例會收到年終獎金。'},
+      {en:'gradually',pos:'adv.',zh:'逐漸地；緩慢地',syn:'slowly, progressively, incrementally',note:'gradual (adj.) → gradually (adv.)；gradual change = 漸進式變化',ex:'The company gradually expanded its market share.',exzh:'公司逐漸擴大了市場份額。'},
+      {en:'repeatedly',pos:'adv.',zh:'反覆地；多次地',syn:'again and again, over and over',note:'repeat (v.) → repeated (adj.) → repeatedly (adv.)；repeated attempts = 多次嘗試',ex:'She repeatedly asked for a refund but received no response.',exzh:'她多次要求退款但沒有收到回應。'},
+      {en:'modify',pos:'v.',zh:'修改；調整；更動',syn:'alter, revise, adjust, amend',note:'modification (n.) 修改；modified (adj.) 修改過的；modify a contract/design/plan',ex:'The engineer modified the design to improve safety.',exzh:'工程師修改了設計以提高安全性。'},
+      {en:'subsequently',pos:'adv.',zh:'隨後；後來；接著',syn:'afterward, later, consequently',note:'subsequent (adj.) 後來的；subsequent to = 在...之後（介詞）',ex:'He resigned and subsequently started his own business.',exzh:'他辭職後隨即創立了自己的公司。'},
+      {en:'consecutively',pos:'adv.',zh:'連續地；依序地',syn:'in a row, successively, back to back',note:'consecutive (adj.) 連續的；three consecutive years = 連續三年',ex:'She won the award consecutively for three years.',exzh:'她連續三年獲得了這個獎項。'},
+      {en:'afterward',pos:'adv.',zh:'之後；隨後',syn:'later, thereafter, subsequently',note:'= afterwards（英式）；shortly afterward = 不久之後',ex:'We had dinner and went for a walk afterward.',exzh:'我們吃完晚飯後去散了步。'},
+      {en:'altogether',pos:'adv.',zh:'總計；完全地；總共',syn:'in total, in all, all told',note:'altogether = 總共（強調總數）；all together = 全部一起（注意差異）',ex:'There were 50 participants altogether at the seminar.',exzh:'研討會共有50位參加者。'},
+      {en:'accordingly',pos:'adv.',zh:'因此；相應地；照著',syn:'therefore, consequently, as a result',note:'act accordingly = 照著行事；adjust accordingly = 相應地調整',ex:'The budget was cut, and staff adjusted their spending accordingly.',exzh:'預算被削減，員工相應地調整了支出。'},
+      {en:'uniformly',pos:'adv.',zh:'一致地；均勻地',syn:'consistently, evenly, equally',note:'uniform (adj.) 統一的；uniformly applied = 一致地適用',ex:'The paint was applied uniformly across the wall.',exzh:'油漆均勻地塗抹在整面牆上。'},
+      {en:'enthusiastically',pos:'adv.',zh:'熱情地；充滿熱忱地',syn:'eagerly, passionately, keenly',note:'enthusiastic (adj.) 熱情的；enthusiasm (n.) 熱忱',ex:'The audience applauded enthusiastically.',exzh:'觀眾熱情地鼓掌。'},
+      {en:'effective',pos:'adj.',zh:'生效的；有效的',syn:'in effect, operative, valid',note:'⚠️ 多益高頻：effective from + 日期 = 自...起生效；effective immediately = 即時生效',ex:'Effective January 1, all staff must use the new system.',exzh:'自1月1日起，所有員工必須使用新系統。'},
+      {en:'relevant',pos:'adj.',zh:'相關的；切題的（搭配 to）',syn:'pertinent, applicable, related',note:'relevant to sb/sth；irrelevant = 不相關的；relevant experience = 相關經驗',ex:'Please submit only information relevant to the position.',exzh:'請只提交與職位相關的資訊。'},
+      {en:'dedicated',pos:'adj.',zh:'致力的；專用的（搭配 to）',syn:'committed to, devoted to',note:'be dedicated to + N/V-ing；a dedicated server = 專用伺服器',ex:'She is dedicated to improving workplace safety.',exzh:'她致力於改善工作場所安全。'},
+      {en:'valid',pos:'adj.',zh:'有效的；合法的',syn:'legitimate, authorized, acceptable',note:'valid ticket/password/ID = 有效票券/密碼/證件；validity (n.) 有效性',ex:'Your ticket is valid for 30 days from the date of purchase.',exzh:'您的票券自購買日起30天內有效。'},
+      {en:'raise (funds)',pos:'v.',zh:'籌集；募集（資金）',syn:'collect, gather, generate',note:'raise funds/capital/money = 募資；raise prices = 提高價格；raise a question = 提出問題',ex:'The charity raised over $1 million in a single event.',exzh:'這個慈善活動在單次活動中籌集了超過100萬美元。'},
+      {en:'issue (stock)',pos:'v.',zh:'發行（股票）；發出；簽發',syn:'release, publish, distribute',note:'issue stock = 發行股票；issue a statement/warning/permit = 發表聲明/警告/許可',ex:'The government issued new guidelines for food safety.',exzh:'政府發布了新的食品安全指導方針。'},
+      {en:'upcoming',pos:'adj.',zh:'即將到來的；即將舉行的',syn:'forthcoming, approaching, imminent',note:'upcoming meeting/event/product launch = 即將舉行的會議/活動/產品發表',ex:'Please mark your calendar for the upcoming product launch.',exzh:'請在日曆上標記即將舉行的產品發表會。'},
+      {en:'lengthy',pos:'adj.',zh:'漫長的；冗長的',syn:'long, prolonged, extended, protracted',note:'a lengthy process/meeting/report = 漫長的流程/會議/報告',ex:'The contract negotiation was a lengthy process.',exzh:'合約談判是一個漫長的過程。'},
+      {en:'So that',pos:'conj.',zh:'為了（表目的）；因此（表結果）',syn:'in order that, so as to',note:'= in order that；引導目的子句；so that + S + can/could/will/would',ex:'She studied hard so that she could pass the exam.',exzh:'她努力學習，為了能通過考試。'},
+      {en:'Now that',pos:'conj.',zh:'既然；由於...已經（表前提已成立）',syn:'since, given that, seeing that',note:'表示前提已達成後的行動；Now that the rain has stopped, we can go out.',ex:'Now that the report is done, we can move on to the next phase.',exzh:'既然報告完成了，我們可以進入下一個階段。'},
+            {en:'reward',pos:'v./n.',zh:'獎勵；報酬；回報',syn:'compensate, award, recognize',note:'reward sb for sth = 因某事獎勵某人；rewarding (adj.) = 有回報的；reward program = 獎勵計劃',ex:'Employees are rewarded for outstanding performance.',exzh:'員工因傑出表現而獲得獎勵。'},
+      {en:'advance',pos:'v./n.',zh:'（v.）推進；預付 /（n.）進步；預付款',syn:'progress, promote / prepayment',note:'in advance = 提前；pay in advance = 預付；advances in technology = 技術進步',ex:'The project advanced ahead of schedule.',exzh:'專案提前推進。'},
+      {en:'enclose',pos:'v.',zh:'附上；圍住；隨函附寄',syn:'include, attach, surround',note:'enclosed (adj.) 附上的；enclosure (n.) 附件；Please find... enclosed = 隨函附上...',ex:'Please find the invoice enclosed with this letter.',exzh:'請見隨函附上的發票。'},
+      {en:'shortly',pos:'adv.',zh:'不久；很快；簡短地',syn:'soon, before long, in a moment',note:'shortly after/before = 不久後/前；= soon；shortly afterward = 隨即',ex:'The meeting will begin shortly.',exzh:'會議即將開始。'},
+      {en:'resulting',pos:'adj.',zh:'由此產生的；作為結果的',syn:'consequent, ensuing',note:'the resulting damage/problem = 由此造成的損失/問題；result (v.) in = 導致',ex:'The accident and the resulting damage cost millions.',exzh:'事故及其造成的損失耗費數百萬。'},
+      {en:'efficient',pos:'adj.',zh:'有效率的；高效的',syn:'productive, streamlined, effective',note:'efficient use of resources = 有效利用資源；efficiency (n.) 效率；≠ effective（有效的）',ex:'The new system is far more efficient than the old one.',exzh:'新系統比舊系統有效率得多。'},
+      {en:'originating',pos:'adj.',zh:'起源的；發起的',syn:'stemming, arising, derived',note:'originate (v.) 起源於；originating from = 來自於；country of origin = 原產地',ex:'The tradition originating in Asia is now global.',exzh:'這個起源於亞洲的傳統現在已遍及全球。'},
+      {en:'subject (to)',pos:'adj.',zh:'受...支配的；以...為條件（搭配 to）',syn:'liable to, prone to',note:'subject to change/approval/availability = 可能變動/須待批准/視供應情況',ex:'Prices are subject to change without notice.',exzh:'價格可能在未通知情況下變動。'},
+      {en:'entitled (to)',pos:'adj.',zh:'有資格的；有權得到（搭配 to）',syn:'qualified for, eligible for',note:'be entitled to sth/to do sth = 有權獲得/做；entitlement (n.) 權益',ex:'Full-time employees are entitled to health insurance.',exzh:'全職員工有資格享有健康保險。'},
+      {en:'connected',pos:'adj.',zh:'連接的；有關聯的',syn:'linked, networked, related',note:'well-connected = 人脈廣的；connected to = 與...連接/相關',ex:'All devices are connected to the company network.',exzh:'所有設備都連接到公司網絡。'},
+      {en:'varied',pos:'adj.',zh:'多樣的；各式各樣的',syn:'diverse, assorted, different',note:'varied selection/menu/background = 多樣的選擇/菜單/背景；vary (v.) 變化',ex:'The menu offers a varied selection of dishes.',exzh:'菜單提供各式各樣的菜餚。'},
+      {en:'durable',pos:'adj.',zh:'耐用的；持久的',syn:'long-lasting, sturdy, resilient',note:'durable goods = 耐用品；durability (n.) 耐久性',ex:'This material is lightweight yet durable.',exzh:'這種材料輕量但耐用。'},
+      {en:'invest',pos:'v.',zh:'投資；投入',syn:'put money into, fund, finance',note:'invest in = 投資於；investment (n.) 投資；investor (n.) 投資者',ex:'The firm decided to invest in renewable energy.',exzh:'公司決定投資再生能源。'},
+      {en:'deposit',pos:'v./n.',zh:'（v.）存入 /（n.）存款；押金',syn:'put in, pay in / down payment, security',note:'make a deposit = 存款/付押金；deposit account = 存款帳戶',ex:'Please deposit the check before 3 P.M.',exzh:'請在下午3點前存入支票。'},
+      {en:'reimburse',pos:'v.',zh:'報銷；償還；補償',syn:'refund, compensate, pay back',note:'reimburse sb for sth = 報銷某人的費用；reimbursement (n.) 報銷',ex:'Employees will be reimbursed for travel expenses.',exzh:'員工的差旅費將獲得報銷。'},
+      {en:'raise',pos:'v.',zh:'籌集；提高；提出',syn:'collect, gather / increase / bring up',note:'raise funds/capital = 募資；raise prices = 漲價；raise a question = 提問',ex:'The charity raised over $1 million in a single event.',exzh:'這個慈善活動在單次活動中籌集了超過100萬美元。'},
+      {en:'issue',pos:'v./n.',zh:'（v.）發行；發出；簽發 /（n.）議題；問題',syn:'release, publish, distribute / topic, matter',note:'issue a statement/permit/warning = 發表聲明/許可/警告；at issue = 爭議中的',ex:'The government issued new guidelines for food safety.',exzh:'政府發布了新的食品安全指導方針。'},
+      {en:'achieve',pos:'v.',zh:'達成；實現；取得',syn:'accomplish, attain, reach',note:'achieve a goal/target/result = 達成目標/指標/成果；achievement (n.) 成就',ex:'The team achieved record sales last quarter.',exzh:'團隊上季創下銷售記錄。'},
+      {en:'renew',pos:'v.',zh:'更新；續約；重新開始',syn:'extend, refresh, reinstate',note:'renew a subscription/contract/passport = 續訂/續約/護照更新',ex:'Please remember to renew your membership before it expires.',exzh:'請記得在會員資格到期前更新。'},
+      {en:'frequent',pos:'adj.',zh:'頻繁的；經常的',syn:'regular, repeated, recurrent',note:'frequent traveler/visitor = 常旅客/常客；frequently (adv.) = 頻繁地',ex:'He is a frequent traveler who visits clients weekly.',exzh:'他是個常旅客，每週拜訪客戶。'},
+      {en:'limited',pos:'adj.',zh:'有限的；受限制的',syn:'restricted, finite, scarce',note:'limited edition/time/resources = 限量版/限時/有限資源；limit (v./n.) 限制',ex:'Tickets are limited, so purchase early.',exzh:'票數有限，請及早購買。'},
+      {en:'preferable (to)',pos:'adj.',zh:'更好的；更可取的（搭配 to）',syn:'better, more desirable, preferred',note:'preferable to = 比...更好；preferably (adv.) = 最好；preference (n.) 偏好',ex:'A phone call is preferable to an email in urgent cases.',exzh:'緊急情況下打電話比發電子郵件更好。'},
+      {en:'numerous',pos:'adj.',zh:'許多的；無數的',syn:'many, a great number of, countless',note:'numerous complaints/requests/examples = 許多投訴/要求/例子',ex:'Numerous complaints were filed against the contractor.',exzh:'針對承包商提出了許多投訴。'},
+      {en:'outstanding',pos:'adj.',zh:'傑出的；卓越的 / 未付清的；未解決的',syn:'exceptional, excellent / pending, unpaid',note:'⚠️ 雙重意思：outstanding results（傑出成果）vs outstanding balance（未付清餘額）',ex:'She has an outstanding balance of $500. / He is an outstanding performer.',exzh:'她有500美元未付清的餘額。/ 他是傑出的表現者。'},
+      {en:'dominant',pos:'adj.',zh:'主導的；占優勢的；佔統治地位的',syn:'leading, prevailing, predominant',note:'dominant position/force/player = 主導地位/力量/玩家；dominate (v.) 主導',ex:'The company has a dominant position in the market.',exzh:'該公司在市場上佔據主導地位。'},
+      {en:'As far as',pos:'conj. phr.',zh:'就...而言；就...所知',syn:'to the extent that, as much as',note:'as far as I know/can tell = 就我所知；as far as sb is concerned = 就某人而言',ex:'As far as I know, the project is still on schedule.',exzh:'就我所知，專案仍在按計劃進行。'},
+      {en:'Moreover',pos:'adv.',zh:'此外；而且（副詞，不可引導子句）',syn:'furthermore, in addition, besides',note:'⚠️ 副詞，需用句號/分號隔開，不能像連接詞直接引導子句',ex:'The price is low. Moreover, the quality is excellent.',exzh:'價格低廉。此外，品質也很出色。'}
+    ]
+  },
+  {
+    id: 'sec4',
+    label: '閱讀小考',
+    title: '閱讀小考 — 重要字彙',
+    words: [
+      {en:'banquet',pos:'n.',zh:'宴會；宴席',syn:'feast, formal dinner',note:'banquet hall = 宴會廳；banquet facilities = 宴會設施；host a banquet = 舉辦宴會',ex:'The hotel offers state-of-the-art banquet facilities for up to 500 guests.',exzh:'飯店提供可容納500位賓客的最先進宴會設施。'},
+      {en:'function',pos:'n.',zh:'（此處）宴席；社交場合；活動',syn:'event, occasion, gathering',note:'此義：社交/正式場合；另義：功能；function well = 運作良好',ex:'The charity function raised over $50,000.',exzh:'這場慈善宴席籌集了超過50,000美元。'},
+      {en:'volunteer',pos:'n./v.',zh:'（n.）志工 /（v.）自願做某事',syn:'unpaid worker / offer oneself',note:'volunteer to do sth = 自願做某事；voluntary (adj.) 自願的；voluntarily (adv.)',ex:'She volunteered to organize the annual charity event.',exzh:'她自願組織年度慈善活動。'},
+      {en:'celebrate / anniversary',pos:'phr.',zh:'慶祝週年紀念',syn:'mark, commemorate',note:'celebrate an anniversary = 慶祝週年；work anniversary = 工作週年；wedding anniversary = 結婚週年',ex:'The company celebrated its 50th anniversary with a gala dinner.',exzh:'公司以晚宴慶祝其50週年紀念日。'},
+      {en:'assorted',pos:'adj.',zh:'各式各樣的；什錦的',syn:'varied, mixed, diverse',note:'assorted chocolates/flavors/beverages = 什錦巧克力/各式口味/各式飲料；assortment (n.)',ex:'The gift basket contained assorted snacks and beverages.',exzh:'禮籃中包含各式零食和飲料。'},
+      {en:'free of charge',pos:'phr.',zh:'免費',syn:'at no cost, complimentary, gratis',note:'= at no cost = complimentary；free of charge service = 免費服務',ex:'Delivery is free of charge for orders over $100.',exzh:'訂單超過100美元免費送貨。'},
+      {en:'complimentary',pos:'adj.',zh:'免費的；贈送的',syn:'free, gratis, on the house',note:'⚠️ 注意：complimentary（免費的）≠ complementary（互補的）',ex:'All guests receive a complimentary breakfast.',exzh:'所有賓客可享用免費早餐。'},
+      {en:'sustainably',pos:'adv.',zh:'永續地；以可持續的方式',syn:'in an eco-friendly manner',note:'sustainable (adj.) → sustainably (adv.)；sustainably caught/sourced/produced',ex:'The company is committed to sourcing materials sustainably.',exzh:'公司致力於以永續方式採購材料。'},
+      {en:'be committed to + V-ing',pos:'phr.',zh:'致力於（固定搭配動名詞）',syn:'be dedicated to, be devoted to',note:'⚠️ committed to 後接 V-ing（動名詞），不接不定詞 to V',ex:'We are committed to providing excellent customer service.',exzh:'我們致力於提供卓越的客戶服務。'},
+      {en:'course of action',pos:'n. phr.',zh:'行動方案；處理方式',syn:'plan of action, approach, strategy',note:'best course of action = 最佳處理方案；determine a course of action = 決定行動方案',ex:'We need to determine the best course of action immediately.',exzh:'我們需要立即確定最佳行動方案。'},
+      {en:'maintenance',pos:'n.',zh:'維護；保養；維修',syn:'upkeep, servicing, repair',note:'maintenance issue = 維護問題；maintenance fee = 保養費；maintain (v.) → maintenance (n.)',ex:'The technician resolved the maintenance issue in under an hour.',exzh:'技術人員在一小時內解決了維護問題。'},
+    ]
+  }
+];
+
+// ── STORAGE ───────────────────────────────────────────
+function getChecked(){try{const r=localStorage.getItem('w1_checked');return r?JSON.parse(r):{}}catch(e){return {}}}
+function saveChecked(d){try{localStorage.setItem('w1_checked',JSON.stringify(d))}catch(e){}}
+let checked=getChecked();
+let currentFilter='all';
+
+function getAllWords(){const a=[];sections.forEach(s=>s.words.forEach(w=>a.push({...w,section:s.id})));return a}
+function getKey(sid,en){return sid+'::'+en}
+function updateProgress(){
+  const all=getAllWords(),total=all.length,done=all.filter(w=>checked[getKey(w.section,w.en)]).length;
+  document.getElementById('total-count').textContent=total;
+  document.getElementById('total-count2').textContent=total;
+  document.getElementById('done-count').textContent=done;
+  document.getElementById('progress-bar').style.width=(total>0?Math.round(done/total*100):0)+'%';
+}
+function renderAll(){
+  const container=document.getElementById('main-content');
+  container.innerHTML='';
+  sections.forEach(sec=>{
+    const secDiv=document.createElement('div');
+    secDiv.className='section-block';secDiv.dataset.secid=sec.id;
+    const done=sec.words.filter(w=>checked[getKey(sec.id,w.en)]).length;
+    const hdr=document.createElement('div');hdr.className='section-header';
+    hdr.innerHTML=`<span class="section-label">${sec.label}</span><span class="section-title">${sec.title}</span><span class="section-count">${done}/${sec.words.length}</span>`;
+    secDiv.appendChild(hdr);
+    sec.words.forEach(w=>{
+      const key=getKey(sec.id,w.en),isC=!!checked[key];
+      const item=document.createElement('div');
+      item.className='word-item'+(isC?' checked':'');
+      item.dataset.section=sec.id;item.dataset.checked=isC?'1':'0';
+      item.innerHTML=`
+        <div class="word-row">
+          <div class="checkbox" onclick="toggleCheck(this,'${key}','${sec.id}')"><span class="check-icon">✓</span></div>
+          <div class="word-main" onclick="toggleExpand(this.closest('.word-item'))">
+            <div class="word-en">${w.en}<span class="word-pos">${w.pos}</span></div>
+            <div class="word-zh">${w.zh}</div>
+          </div>
+          <span class="expand-btn" onclick="toggleExpand(this.closest('.word-item'))">▼</span>
+        </div>
+        <div class="word-detail">
+          ${w.note?`<div class="detail-note">${w.note}</div>`:''}
+          ${w.syn?`<div class="detail-syn">≈ 近義：<span>${w.syn}</span></div>`:''}
+          <div class="detail-ex">${w.ex}</div>
+          <div class="detail-ex-zh">${w.exzh}</div>
+        </div>`;
+      secDiv.appendChild(item);
+    });
+    container.appendChild(secDiv);
+  });
+  applyFilter(currentFilter);updateProgress();
+}
+function toggleCheck(cb,key,secId){
+  event.stopPropagation();
+  const item=cb.closest('.word-item'),nowC=!item.classList.contains('checked');
+  item.classList.toggle('checked',nowC);item.dataset.checked=nowC?'1':'0';
+  if(nowC)checked[key]=true;else delete checked[key];
+  saveChecked(checked);updateProgress();updateSectionCount(secId);
+  if(currentFilter==='未學'&&nowC)item.classList.add('hidden');
+  if(currentFilter==='已掌握'&&!nowC)item.classList.add('hidden');
+}
+function toggleExpand(item){
+  item.classList.toggle('open');
+  item.querySelector('.expand-btn').textContent=item.classList.contains('open')?'▲':'▼';
+}
+function updateSectionCount(secId){
+  const sec=sections.find(s=>s.id===secId);if(!sec)return;
+  const done=sec.words.filter(w=>checked[getKey(secId,w.en)]).length;
+  const hdr=document.querySelector(`.section-block[data-secid="${secId}"] .section-count`);
+  if(hdr)hdr.textContent=`${done}/${sec.words.length}`;
+}
+function setFilter(filter){
+  currentFilter=filter;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  applyFilter(filter);
+}
+function applyFilter(filter){
+  document.querySelectorAll('.section-block').forEach(sec=>{
+    let vis=false;
+    sec.querySelectorAll('.word-item').forEach(item=>{
+      const isC=item.dataset.checked==='1';
+      let show=true;
+      if(filter==='未學')show=!isC;
+      else if(filter==='已掌握')show=isC;
+      else if(filter.startsWith('sec'))show=(item.dataset.section===filter);
+      item.classList.toggle('hidden',!show);
+      if(show)vis=true;
+    });
+    const hdr=sec.querySelector('.section-header');
+    if(hdr)hdr.style.display=vis?'flex':'none';
+  });
+}
+function resetAll(){document.getElementById('reset-dialog').classList.add('show')}
+function closeDialog(){document.getElementById('reset-dialog').classList.remove('show')}
+function confirmReset(){closeDialog();checked={};saveChecked(checked);renderAll()}
+renderAll();
+</script>
+</body>
+</html>
