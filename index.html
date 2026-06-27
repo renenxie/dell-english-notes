@@ -8,10 +8,15 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #F7F9FC; font-family: -apple-system, "Segoe UI", system-ui, sans-serif; min-height: 100vh; }
 
-  .header { background: #1A3C6E; color: #fff; padding: 32px 20px 28px; text-align: center; }
+  .header { background: #1A3C6E; color: #fff; padding: 32px 20px 20px; text-align: center; }
   .header-eyebrow { font-size: 11px; letter-spacing: 2px; opacity: 0.65; text-transform: uppercase; margin-bottom: 8px; }
   .header-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
-  .header-sub { font-size: 13px; opacity: 0.7; margin-top: 6px; }
+  .header-sub { font-size: 13px; opacity: 0.7; margin-top: 6px; margin-bottom: 16px; }
+
+  .progress-section { max-width: 320px; margin: 0 auto; }
+  .progress-text { font-size: 12px; opacity: .85; margin-bottom: 7px; }
+  .progress-bar-bg { background: rgba(255,255,255,.2); border-radius: 10px; height: 7px; overflow: hidden; }
+  .progress-bar-fill { background: #E8501A; height: 100%; border-radius: 10px; transition: width .4s; width: 0%; }
 
   .content { max-width: 720px; margin: 0 auto; padding: 28px 16px 48px; }
 
@@ -21,18 +26,20 @@
     background: #fff;
     border: 1px solid #D8E2F0;
     border-radius: 10px;
-    padding: 18px 16px;
+    padding: 18px 16px 14px;
     text-decoration: none;
     color: inherit;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    transition: box-shadow 0.15s, transform 0.15s;
+    transition: box-shadow 0.15s, transform 0.15s, border-color 0.2s;
     cursor: pointer;
   }
   .week-card:hover { box-shadow: 0 4px 16px rgba(26,60,110,0.12); transform: translateY(-2px); }
   .week-card.available { border-color: rgba(26,60,110,0.3); }
   .week-card.unavailable { opacity: 0.4; cursor: default; pointer-events: none; }
+  .week-card.read { border-color: rgba(26,122,74,.4) !important; }
+  .week-card.read .week-label { color: #1A7A4A; }
 
   .week-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #E8501A; }
   .week-title { font-size: 15px; font-weight: 800; color: #1A3C6E; }
@@ -50,6 +57,25 @@
     width: fit-content;
   }
   .week-card.available .week-badge { background: rgba(232,80,26,0.08); color: #E8501A; border-color: rgba(232,80,26,0.25); }
+
+  .read-toggle {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(26,60,110,.06);
+    border: 1px solid rgba(26,60,110,.15);
+    color: #6B7A99;
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+    width: fit-content;
+  }
+  .read-toggle:hover { background: rgba(26,122,74,.1); border-color: rgba(26,122,74,.3); color: #1A7A4A; }
+  .week-card.read .read-toggle { background: rgba(26,122,74,.1); border-color: rgba(26,122,74,.3); color: #1A7A4A; }
 </style>
 </head>
 <body>
@@ -58,45 +84,55 @@
   <div class="header-eyebrow">Dell English</div>
   <div class="header-title">新多益筆記</div>
   <div class="header-sub">點選週次開始複習</div>
+  <div class="progress-section">
+    <div class="progress-text">讀書進度 <span id="read-count">0</span> / 24 週（<span id="progress-pct">0%</span>）</div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+  </div>
 </div>
 
 <div class="content">
   <div class="grid">
 
-    <a href="week1 notes.html" class="week-card available">
+    <a href="week1 notes.html" class="week-card available" data-week="1">
       <div class="week-label">Week 1</div>
       <div class="week-title">照片題</div>
       <div class="week-badge">已完成</div>
+      <div class="read-toggle" onclick="toggleRead(event,1)">標記已讀</div>
     </a>
 
-    <a href="week2 notes.html" class="week-card available">
+    <a href="week2 notes.html" class="week-card available" data-week="2">
       <div class="week-label">Week 2</div>
       <div class="week-title">應答題</div>
       <div class="week-badge">已完成</div>
+      <div class="read-toggle" onclick="toggleRead(event,2)">標記已讀</div>
     </a>
 
-    <a href="week3 notes.html" class="week-card available">
+    <a href="week3 notes.html" class="week-card available" data-week="3">
       <div class="week-label">Week 3</div>
       <div class="week-title">文法字彙破解</div>
       <div class="week-badge">已完成</div>
+      <div class="read-toggle" onclick="toggleRead(event,3)">標記已讀</div>
     </a>
 
-    <a href="week4 notes.html" class="week-card available">
+    <a href="week4 notes.html" class="week-card available" data-week="4">
       <div class="week-label">Week 4</div>
       <div class="week-title">段落填空破解</div>
       <div class="week-badge">已完成</div>
+      <div class="read-toggle" onclick="toggleRead(event,4)">標記已讀</div>
     </a>
 
-    <a href="week5 notes.html" class="week-card available">
+    <a href="week5 notes.html" class="week-card available" data-week="5">
       <div class="week-label">Week 5</div>
       <div class="week-title">簡短對話題</div>
       <div class="week-badge">已完成</div>
+      <div class="read-toggle" onclick="toggleRead(event,5)">標記已讀</div>
     </a>
 
-    <a href="week6 notes.html" class="week-card available">
+    <a href="week6 notes.html" class="week-card available" data-week="6">
       <div class="week-label">Week 6</div>
       <div class="week-title">簡短談話題</div>
       <div class="week-badge">已完成</div>
+      <div class="read-toggle" onclick="toggleRead(event,6)">標記已讀</div>
     </a>
 
     <div class="week-card unavailable">
@@ -209,6 +245,40 @@
 
   </div>
 </div>
+
+<script>
+const TOTAL = 24;
+function getProgress() {
+  const p = {};
+  for (let i = 1; i <= TOTAL; i++) p[i] = localStorage.getItem('dell-notes-w' + i) === 'read';
+  return p;
+}
+function updateUI() {
+  const p = getProgress();
+  const count = Object.values(p).filter(Boolean).length;
+  document.getElementById('read-count').textContent = count;
+  const pct = Math.round(count / TOTAL * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.querySelectorAll('.week-card[data-week]').forEach(card => {
+    const w = card.dataset.week;
+    const isRead = p[w];
+    card.classList.toggle('read', isRead);
+    const toggle = card.querySelector('.read-toggle');
+    if (toggle) toggle.textContent = isRead ? '✓ 已讀' : '標記已讀';
+  });
+}
+function toggleRead(e, week) {
+  e.preventDefault();
+  e.stopPropagation();
+  const key = 'dell-notes-w' + week;
+  const isRead = localStorage.getItem(key) === 'read';
+  if (isRead) localStorage.removeItem(key);
+  else localStorage.setItem(key, 'read');
+  updateUI();
+}
+document.addEventListener('DOMContentLoaded', updateUI);
+</script>
 
 </body>
 </html>
