@@ -98,6 +98,19 @@
     .quiz-options { grid-template-columns: 1fr; }
     .header-title { font-size: 17px; }
   }
+
+  /* MEMO TAB */
+  .memo-wrap { display: flex; flex-direction: column; gap: 12px; }
+  .memo-header { margin-bottom: 4px; }
+  .memo-title { font-size: 15px; font-weight: 800; color: #1A3C6E; margin-bottom: 3px; }
+  .memo-hint { font-size: 12px; color: #6B7A99; line-height: 1.5; }
+  .memo-area { width: 100%; min-height: 320px; border: 1.5px solid #D8E2F0; border-radius: 10px; padding: 14px 16px; font-size: 14px; font-family: inherit; line-height: 1.8; color: #333; resize: vertical; background: #fff; outline: none; transition: border-color .2s; display: block; }
+  .memo-area:focus { border-color: #1A3C6E; box-shadow: 0 0 0 3px rgba(26,60,110,.07); }
+  .memo-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .memo-status { font-size: 11px; color: #1A7A4A; font-weight: 600; height: 16px; }
+  .memo-clear-btn { font-size: 11px; color: #6B7A99; background: none; border: 1px solid #D8E2F0; border-radius: 5px; padding: 3px 9px; cursor: pointer; }
+  .memo-clear-btn:hover { color: #E8501A; border-color: #E8501A; }
+  .memo-notice { font-size: 12px; color: #1A3C6E; background: #EAF0FB; border-radius: 8px; padding: 10px 14px; line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -112,6 +125,7 @@
     <button class="nav-btn" onclick="showSection(2)">高分主題字彙</button>
     <button class="nav-btn" onclick="showSection(3)">高分字彙練習</button>
     <button class="nav-btn" onclick="showSection(4)">閱讀小考詳解</button>
+    <button class="nav-btn" onclick="showSection(5)">我的筆記</button>
   </div>
 </div>
 
@@ -199,6 +213,32 @@
     </div>
   </div>
   <div id="part6-questions"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 5: 我的筆記 -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section" id="sec-5">
+  <div class="card">
+    <div class="memo-wrap">
+      <div class="memo-header">
+        <div class="memo-title">📝 Week 1 我的筆記</div>
+        <div class="memo-hint">記錄學習心得、錯題分析、或任何備忘。輸入後自動儲存。</div>
+      </div>
+      <textarea class="memo-area" id="memo-input" placeholder="在這裡寫下你的筆記…
+
+例如：
+• 照片題常考動詞：stroll, pile, attach…
+• 容易混淆的詞：clutter vs. litter
+• 本週錯誤紀錄…"></textarea>
+      <div class="memo-footer">
+        <div class="memo-status" id="memo-status"></div>
+        <button class="memo-clear-btn" onclick="memoClear()">清除筆記</button>
+      </div>
+    </div>
+  </div>
+  <div class="memo-notice">⚠️ 筆記目前存在這台裝置的瀏覽器中。更換裝置或清除瀏覽器資料後筆記會消失。日後可升級為雲端同步。</div>
 </div>
 
 </div><!-- /content -->
@@ -619,7 +659,34 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const p6 = document.getElementById('part6-questions');
   part6Data.forEach(q => makeQuizCard(q, p6, false));
+
+  // ── MEMO ──────────────────────────────────────────
+  const MEMO_KEY = 'dell-notes-memo-w1';
+  let memoTimer;
+  const memoTA = document.getElementById('memo-input');
+  const memoSt = document.getElementById('memo-status');
+  if (memoTA) {
+    memoTA.value = localStorage.getItem(MEMO_KEY) || '';
+    memoTA.addEventListener('input', () => {
+      clearTimeout(memoTimer);
+      memoSt.textContent = '儲存中…';
+      memoTimer = setTimeout(() => {
+        localStorage.setItem(MEMO_KEY, memoTA.value);
+        memoSt.textContent = '已儲存 ✓';
+        setTimeout(() => { memoSt.textContent = ''; }, 2000);
+      }, 700);
+    });
+  }
 });
+
+function memoClear() {
+  if (!confirm('確定要清除所有筆記嗎？此動作無法復原。')) return;
+  const ta = document.getElementById('memo-input');
+  if (ta) ta.value = '';
+  localStorage.removeItem('dell-notes-memo-w1');
+  const st = document.getElementById('memo-status');
+  if (st) { st.textContent = '已清除'; setTimeout(() => { st.textContent = ''; }, 2000); }
+}
 </script>
 <script>localStorage.setItem('dell-notes-w1','read');</script>
 </body>
